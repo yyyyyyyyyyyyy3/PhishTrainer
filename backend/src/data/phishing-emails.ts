@@ -1,0 +1,3489 @@
+export interface PhishingEmail {
+    id: string;
+    subject: string;
+    from: string;
+    body: string;
+    isPhishing: boolean;
+    indicators: string[];
+    explanation: string;
+    difficulty: "easy" | "medium" | "hard";
+    category: string;
+}
+
+export const phishingEmails: PhishingEmail[] = [
+    {
+        id: "1",
+        subject: "Невідкладне: Верифікуйте ваш рахунок PayPal",
+        from: "security@paypal-verify.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px;">
+          <p>Дорогий користувачу PayPal,</p>
+          <p>Ми виявили підозрілу активність на вашому рахунку. З метою захисту вашого акаунту, нам потрібна негайна верифікація.</p>
+          <p><strong>ВИКОНАЙТЕ ЦЕ НЕГАЙНО:</strong></p>
+          <a href="https://paypal-verify-now.ru/verify" style="display: inline-block; padding: 10px 20px; background: #003087; color: black; text-decoration: none; border-radius: 5px; margin: 10px 0;">Верифікуйте рахунок</a>
+          <p style="margin-top: 30px;">Якщо це були не ви, проігноруйте це повідомлення.</p>
+          <p>Команда PayPal</p>
+        </div>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            'Посилання вказує на невідомий домен "paypal-verify-now.ru" замість office.paypal.com',
+            'Спеціальна термінологія на кшталт "негайно" та "невідкладно" для створення паніки',
+            "Запит на верифікацію облікових даних - PayPal ніколи це не робить емейлом",
+            'Адреса відправника "paypal-verify.com" не є офіційною (мав би бути @paypal.com)',
+        ],
+        explanation:
+            "Це класичний фішинг для крадіжки облікових даних. Офіційні платежні системи ніколи не просять верифікацію через емейл-посилання. Реальне посилання вказує на підозрілий домен, а не на офіційний сервіс.",
+        difficulty: "medium",
+        category: "paypal",
+    },
+    {
+        id: "2",
+        subject: "Нова лист від вашого менеджера",
+        from: "john.smith@company-internal.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Я твій прямий менеджер Джон Сміт з компанії Acme Corp. Мені потрібна твоя допомога з конфіденційним проектом.</p>
+        <p>Можешь ли ти дати мені список усіх користувачів компанії разом з їхніми паролями та інформацією про оклад?</p>
+        <p>Це для нового звіту з секретності. Надішли мені це якомога швидше.</p>
+        <p>Дякую,<br/>John Smith<br/>Manager</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Запит на паролі та конфіденційну інформацію - жодна легітимна компанія це не робить",
+            'Адреса "company-internal.com" замість офіційної корпоративної адреси',
+            'Поспіх та термін "якомога швидше" - техніка соціальної інженерії',
+            "Рідкісна грамотика та неформальний стиль для менеджера",
+        ],
+        explanation:
+            "Це соціальна інженерія, намагаючись видати себе за менеджера. Жодна компанія ніколи не просить паролі через емейл. Домен вказує на невдалу спробу імітації.",
+        difficulty: "easy",
+        category: "company",
+    },
+    {
+        id: "3",
+        subject: "Ваш рахунок Amazon потребує оновлення платіжної інформації",
+        from: "billing-support@amazon-security.com",
+        body: `
+      <div style="font-family: Arial, sans-serif;">
+        <p>Вітаємо!</p>
+        <p>Ми зараз оновлюємо нашу систему безпеки. Для продовження використання вашого Amazon рахунку, будь ласка, оновіть вашу платіжну інформацію.</p>
+        <p><a href="https://amazons-verify.net/update-payment">Оновити платіж</a></p>
+        <p>Дякуємо за розуміння!<br/>Amazon Billing Team</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            'Посилання вказує на "amazons-verify.net" замість amazon.com',
+            "Запит на платіжну інформацію - Amazon ніколи це не робить емейлом",
+            'Незначне написання "Amazons" замість "Amazon" або "A9"',
+            'Адреса "amazon-security.com" замість офіційної @amazon.com',
+        ],
+        explanation:
+            "Amazon ніколи не просить оновлення платіжної інформації через емейл-посилання. Реальне посилання вказує на фікс домен. Це класичний фішинг для крадіжки платіжних даних.",
+        difficulty: "medium",
+        category: "amazon",
+    },
+    {
+        id: "4",
+        subject: "Звіт про прямий переказ зарплати",
+        from: "hr@company.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Це лист від відділу HR вашої компанії. Ми надсилаємо вам додаток про вашу поточну інформацію про прямий переказ та бенефіти.</p>
+        <p>Будь ласка, перевірте прикріплений файл "Direct_Deposit_Form.pdf" та підтвердіть, що вся інформація є точною.</p>
+        <p>Якщо у вас є запитання, зв'яжіться з нами.</p>
+        <p>Дякуємо,<br/>HR Team</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса є офіційною корпоративною адресою @company.com",
+            "Запит є побутовим (перевірка форми прямого переказу)",
+            "Слід очікувати прикріплений файл від HR",
+            "Тон та стиль відповідає офіційному листу компанії",
+        ],
+        explanation:
+            "Це легітимне повідомлення від HR-відділу. Адреса відправника правильна, запит є розумним, та тон відповідає корпоративним стандартам. Однак завжди перевіряйте прикріплені файли на безпеку.",
+        difficulty: "easy",
+        category: "company",
+    },
+    {
+        id: "5",
+        subject: "Ви виграли $1,000,000!",
+        from: "winner-notification@lottery-international.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #FFD700;">
+        <h1 style="color: red;">ВІТАЄМО! ВИ ВИГРАЛИ!</h1>
+        <p>Ваш емейл було обрано як переможця міжнародної лотереї!</p>
+        <p><strong>Виграш: $1,000,000 USD</strong></p>
+        <p>Щоб отримати ваш виграш, натисніть нижче та введіть інформацію банківського рахунку:</p>
+        <a href="https://lottery-claim.biz/claim">ОТРИМАТИ МІЙ ВИГРАШ</a>
+        <p>Поспішайте! Пропозиція дійсна тільки 24 години!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Нереалістична пропозиція - виграш без участі в лотереї",
+            'Підозрілий домен ".biz" замість офіційних лотерейних сайтів',
+            "Запит на інформацію про банківський рахунок",
+            "Створення термінового відчуття (24 години)",
+            "Надмірне використання великих літер та збудливого форматування",
+        ],
+        explanation:
+            "Це класична схема лотерейного шахрайства. Ви не можете виграти в лотереї, у якій не брали участь. Мета - отримати банківську інформацію або попередню комісію.",
+        difficulty: "easy",
+        category: "lottery",
+    },
+    {
+        id: "6",
+        subject: "Підтвердження замовлення #45892",
+        from: "orders@company-shop.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>Дякуємо за ваше замовлення!</h2>
+        <p>Номер замовлення: #45892</p>
+        <p>Дата: ${new Date().toLocaleDateString("uk-UA")}</p>
+        <hr/>
+        <h3>Деталі замовлення:</h3>
+        <ul>
+          <li>Ноутбук Dell XPS 15 - $1,299.99</li>
+          <li>Миша Logitech MX Master 3 - $99.99</li>
+          <li>Доставка - $15.00</li>
+        </ul>
+        <p><strong>Всього: $1,414.98</strong></p>
+        <p>Очікуваний час доставки: 3-5 робочих днів</p>
+        <p>З повагою,<br/>Команда Company Shop</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Офіційна адреса компанії @company-shop.com",
+            "Містить конкретні деталі замовлення та номер відстеження",
+            "Реалістичні ціни та опис товарів",
+            "Професійний формат та тон",
+            "Немає запитів на особисту інформацію або негайні дії",
+        ],
+        explanation:
+            "Це легітимне підтвердження замовлення від інтернет-магазину. Містить всі необхідні деталі, не запитує додаткову інформацію, та надіслано з офіційного домену компанії.",
+        difficulty: "easy",
+        category: "ecommerce",
+    },
+    {
+        id: "7",
+        subject: "ТЕРМІНОВЕ ПОВІДОМЛЕННЯ: Ваш комп'ютер інфіковано!",
+        from: "security-alert@microsoft-support.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ff0000; color: white;">
+        <h1>⚠️ ПОПЕРЕДЖЕННЯ ПРО БЕЗПЕКУ ⚠️</h1>
+        <p>Ваш комп'ютер інфіковано небезпечним вірусом!</p>
+        <p>Виявлено: Trojan.Win32.Generic</p>
+        <p>НЕГАЙНО зателефонуйте на наш номер підтримки: +1-800-FAKE-NUM</p>
+        <p>АБО натисніть тут для миттєвого видалення:</p>
+        <a href="https://fake-microsoft-support.net/fix" style="background: white; color: red; padding: 10px; display: inline-block; text-decoration: none;">ВИДАЛИТИ ВІРУС ЗАРАЗ</a>
+        <p>Якщо не виправити протягом 1 години, всі ваші файли будуть знищені!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            'Домен "microsoft-support.net" не є офіційним (має бути @microsoft.com)',
+            "Надмірний страх та паніка для маніпуляції користувачем",
+            "Запит на термінові дії або телефонний дзвінок",
+            "Microsoft ніколи не надсилає такі повідомлення електронною поштою",
+            "Використання червоного кольору та емоджі попереджень",
+        ],
+        explanation:
+            "Це tech support scam - шахраї намагаються змусити вас зателефонувати або завантажити шкідливе ПЗ. Microsoft ніколи не надсилає попередження про віруси електронною поштою.",
+        difficulty: "medium",
+        category: "tech-support",
+    },
+    {
+        id: "8",
+        subject: "Нагадування про зустріч команди",
+        from: "calendar@company.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>Нагадування про зустріч</h3>
+        <p>Тема: Щотижневий стенд-ап команди</p>
+        <p>Час: Завтра, 10:00 AM - 10:30 AM</p>
+        <p>Місце: Конференц-зала A / Zoom</p>
+        <p>Організатор: Іван Петренко</p>
+        <hr/>
+        <p>Порядок денний:</p>
+        <ul>
+          <li>Оновлення проекту</li>
+          <li>Блокери та виклики</li>
+          <li>Плани на тиждень</li>
+        </ul>
+        <p>Посилання Zoom буде надіслано за 15 хвилин до початку.</p>
+        <p>До зустрічі!</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Офіційна корпоративна адреса calendar@company.com",
+            "Типове нагадування про зустріч із реалістичними деталями",
+            "Не містить підозрілих посилань або запитів",
+            "Професійний формат календарного повідомлення",
+            "Згадується конкретна людина (організатор)",
+        ],
+        explanation:
+            "Це стандартне нагадування про зустріч від корпоративної календарної системи. Містить всі необхідні деталі, надіслано з офіційного домену, та не має підозрілих елементів.",
+        difficulty: "easy",
+        category: "company",
+    },
+    {
+        id: "9",
+        subject: "Ваш пакунок не може бути доставлений",
+        from: "delivery@fedex-tracking.co",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <img src="https://fake-fedex-logo.com/logo.png" alt="FedEx" style="width: 150px;"/>
+        <p>Шановний клієнте,</p>
+        <p>Ми намагалися доставити ваш пакунок (Tracking: FX1234567890), але не змогли завершити доставку.</p>
+        <p>Причина: Неправильна адреса доставки</p>
+        <p>Будь ласка, оновіть вашу адресу та сплатіть комісію за повторну доставку ($3.99):</p>
+        <a href="https://fedex-redelivery.co/update">Оновити адресу та оплатити</a>
+        <p>Якщо не оновити протягом 48 годин, пакунок буде повернено відправнику.</p>
+        <p>З повагою,<br/>FedEx Delivery Services</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            'Домен "fedex-tracking.co" не є офіційним (@fedex.com)',
+            "Запит на оплату невеликої суми - типова тактика шахраїв",
+            "Логотип завантажується з зовнішнього джерела",
+            "Створення термінового відчуття (48 годин)",
+            "FedEx не запитує оновлення адреси та оплату через емейл-посилання",
+        ],
+        explanation:
+            "Це delivery scam - шахраї видають себе за кур'єрську службу. Посилання веде на фальшиву сторінку для крадіжки платіжних даних. Справжні служби доставки не запитують оплату через емейл.",
+        difficulty: "medium",
+        category: "delivery",
+    },
+    {
+        id: "10",
+        subject: "Ваш щомісячний звіт доступний",
+        from: "reports@company.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>Щомісячний звіт про активність</h3>
+        <p>Вітаємо,</p>
+        <p>Ваш звіт про активність за минулий місяць тепер доступний для перегляду.</p>
+        <p>Основні показники:</p>
+        <ul>
+          <li>Всього завершених завдань: 47</li>
+          <li>Відпрацьовані години: 168</li>
+          <li>Рейтинг продуктивності: 94%</li>
+        </ul>
+        <p>Для перегляду повного звіту, увійдіть до внутрішньої системи.</p>
+        <p>Дякуємо за вашу роботу!</p>
+        <p>З повагою,<br/>Відділ аналітики</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Офіційна корпоративна адреса @company.com",
+            "Реалістичні дані про продуктивність",
+            "Не містить прямих посилань для входу",
+            "Професійний та інформаційний тон",
+            "Типове корпоративне повідомлення про звітність",
+        ],
+        explanation:
+            "Це легітимний внутрішній звіт компанії. Надіслано з офіційного домену, містить конкретні дані, та не запитує особисту інформацію або негайні дії.",
+        difficulty: "easy",
+        category: "company",
+    },
+    {
+        id: "11",
+        subject: "Оновлення умов обслуговування та конфіденційності",
+        from: "legal@linkedin.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>Важливе оновлення про конфіденційність</h2>
+        <p>Привіт,</p>
+        <p>LinkedIn оновив умови обслуговування та політику конфіденційності, які набувають чинності з 15 листопада 2025 року.</p>
+        <p>Щоб продовжити користування вашим рахунком без перебоїв, вам потрібно прочитати та прийняти нові умови:</p>
+        <p><a href="https://linkedin.com/legal/user-agreement">Переглянути нові умови</a></p>
+        <p>Це займе близько 5 хвилин. Якщо ви не приймете умови до зазначеної дати, функціональність рахунку може бути обмежена.</p>
+        <p>Ваш профіль має достатньо часу для ознайомлення з змінами.</p>
+        <p>З повагою,<br/>Команда LinkedIn</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Офіційна адреса @linkedin.com",
+            "Посилання вказує на офіційний домен LinkedIn",
+            "Реалістичне повідомлення про оновлення умов",
+            "Указана конкретна дата вступу в силу",
+            "Тон є професійним та лояльним",
+        ],
+        explanation:
+            "Це легітимне повідомлення від LinkedIn про оновлення умов. Компанії регулярно оновлюють умови обслуговування. Посилання вказує на офіційний домен, а тон відповідає стилю компанії.",
+        difficulty: "hard",
+        category: "linkedin",
+    },
+    {
+        id: "12",
+        subject: "Ваші облікові записи об'єднано",
+        from: "accounts@google.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9;">
+        <div style="max-width: 600px; margin: 0 auto;">
+          <h3>Облікові записи об\'єднано</h3>
+          <p>На вашу основну адресу Google було виявлено іншу адресу на тому ж пристрої.</p>
+          <p>Ми автоматично об\'єднали облікові записи для вашої безпеки. Обидві адреси тепер керуються однією системою входу.</p>
+          <p>Деталі:</p>
+          <ul>
+            <li>Основний акаунт: your-email@gmail.com</li>
+            <li>Об\'єднаний акаунт: alternative@gmail.com</li>
+            <li>Дата об\'єднання: 7 листопада 2025</li>
+          </ul>
+          <p><strong>Якщо це були не ви:</strong></p>
+          <p><a href="https://myaccount.google.com/security">Перевірити активність акаунту</a></p>
+          <p>Якщо ви помітите будь-яку підозрілу активність, одразу змініть пароль та включіть двофакторну аутентифікацію.</p>
+          <p>З повагою,<br/>Команда Google Account</p>
+        </div>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Посилання веде на офіційний домен (myaccount.google.com), але від адреси accounts@google.com",
+            "Google не відправляє такі повідомлення про об'єднання акаунтів",
+            "Тактика соціальної інженерії - видавання себе за офіційне повідомлення від Google",
+            'Спробує змусити користувача перевірити "безпеку"',
+            "Реалістичні деталі (адреси, дати) робить його більш переконливим",
+        ],
+        explanation:
+            'Це фішинг з використанням соціальної інженерії. Хоча посилання вказує на офіційний домен, Google не видає таких повідомлень про об\'єднання акаунтів. Шахраї намагаються залякати користувача та змусити перевірити "безпеку", яка насправді веде на фальшиву сторінку.',
+        difficulty: "hard",
+        category: "google",
+    },
+    {
+        id: "13",
+        subject: "Запит доступу: дозволити новому пристрою?",
+        from: "verify@apple.id",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>Підтвердження входу</h3>
+        <p>Підтвердження входу</p>
+        <p>Ми виявили спробу входу до вашого Apple ID з нового пристрою:</p>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="background: #f0f0f0;">
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Пристрій:</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Chrome на Windows</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Розташування:</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">Київ, Україна</td>
+          </tr>
+          <tr style="background: #f0f0f0;">
+            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Час:</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">7 листопада 2025, 14:35</td>
+          </tr>
+        </table>
+        <p style="margin-top: 20px;">Дозволити цей вхід:</p>
+        <a href="https://appleid.apple.com/account/login?ref=verify" style="display: inline-block; padding: 10px 20px; background: #555; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">Дозволити</a>
+        <p style="margin-top: 20px;">Якщо це були не ви: <a href="https://appleid.apple.com/account/login?deny=true">Отримати допомогу</a></p>
+        <p>—<br/>Apple ID Team</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса verify@apple.id використовує новий домен замість офіційного @apple.com",
+            "Посилання спрямовує на схожий домен, але не офіційний Apple ID",
+            "Apple відправляє такі повідомлення в-app або SMS, рідко по емейлу",
+            "Реалістичні деталі про пристрій та розташування роблять це більш переконливим",
+            "Вимога негайного дозволу для входу - техніка соціальної інженерії",
+        ],
+        explanation:
+            "Це складний фішинг, який видається як офіційне повідомлення Apple. Хоча деталі виглядають реалістично, домен адреси відправника неправильний. Apple зазвичай не запитує такі підтвердження через емейл для нових пристроїв на Chrome/Windows.",
+        difficulty: "hard",
+        category: "apple",
+    },
+    {
+        id: "14",
+        subject: "Запрошення: приєднайся до нашої команди розробників",
+        from: "careers@techstartup.dev",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>Ми цікавимося вами!</h2>
+        <p>Привіт,</p>
+        <p>Ми знайшли ваш профіль на GitHub та були вражені вашими проектами. TechStartup шукає досвідченого backend-розробника для нового проекту.</p>
+        <p>Ось що ми пропонуємо:</p>
+        <ul>
+          <li>Зарплата: €5,000 - €7,000 на місяць</li>
+          <li> 100% remote робота</li>
+          <li>Гнучкий графік</li>
+          <li>Медичне страхування та бонуси</li>
+        </ul>
+        <p>Якщо вам цікаво, заповніть коротку форму тут:</p>
+        <a href="https://techstartup-dev.com/apply?ref=github_candidate">Подати заявку</a>
+        <p>Ми рухаємо швидко і хотіли б почути від вас цього тижня.</p>
+        <p>З повагою,<br/>Ольга Кравець<br/>Head of Talent<br/>TechStartup</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса careers@techstartup.dev навіть для невеликої компанії може бути легітимною",
+            "Приваблива пропозиція роботи - типова тактика фішингу",
+            "Посилання на форму заявки для збору персональних даних",
+            'Поспіх ("цього тижня") - техніка соціальної інженерії',
+            "Реалістична компанія та контактна особа роблять це переконливим",
+        ],
+        explanation:
+            'Це фішинг, видаючись як пропозиція роботи. Шахраї цільно опрацювали профіль на GitHub та намагаються зібрати особисту інформацію через форму "заявки". Форма може містити запити на паспортні дані, номер телефону або банківські реквізити.',
+        difficulty: "hard",
+        category: "recruiting",
+    },
+    {
+        id: "15",
+        subject: "Виписка з банку за листопад 2025",
+        from: "statements@privat24.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <div style="background: white; padding: 20px; border-radius: 5px;">
+          <h3>ПриватБанк - Виписка</h3>
+          <p>Виписка за період: 1-7 листопада 2025</p>
+          <hr/>
+          <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <tr style="background: #f0f0f0; border-bottom: 1px solid #ddd;">
+              <th style="padding: 10px; text-align: left;">Дата</th>
+              <th style="padding: 10px; text-align: left;">Опис операції</th>
+              <th style="padding: 10px; text-align: right;">Сума</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="padding: 10px;">2 листопада</td>
+              <td style="padding: 10px;">Зарахування заробітної плати</td>
+              <td style="padding: 10px; text-align: right; color: green;">+25,000₴</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="padding: 10px;">3 листопада</td>
+              <td style="padding: 10px;">Комунальні платежі</td>
+              <td style="padding: 10px; text-align: right; color: red;">-3,200₴</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="padding: 10px;">5 листопада</td>
+              <td style="padding: 10px;">Покупка в супермаркеті "Метро"</td>
+              <td style="padding: 10px; text-align: right; color: red;">-1,850₴</td>
+            </tr>
+            <tr style="background: #f0f0f0; border-top: 2px solid #333;">
+              <td style="padding: 10px;"><strong>Баланс</strong></td>
+              <td style="padding: 10px;"></td>
+              <td style="padding: 10px; text-align: right;"><strong>19,950₴</strong></td>
+            </tr>
+          </table>
+          <p>Якщо ви помітили підозрілу операцію, звіртеся в наш офіс або на номер 0800 201 201 (безкоштовно).</p>
+          <p>З повагою,<br/>ПриватБанк</p>
+        </div>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса statements@privat24.ua є офіційною для ПриватБанку",
+            "Виписка містить реалістичні операції та баланс",
+            "Формат та стиль відповідають банківським виписким",
+            "Указаний офіційний номер для звернення",
+            "Не запитує будь-яку особисту інформацію",
+        ],
+        explanation:
+            "Це легітимна виписка з банківського рахунку від ПриватБанку. Надіслано з офіційної адреси, містить реалістичні операції, та демонструє актуальні баланси. Банки регулярно надсилають виписки своїм клієнтам.",
+        difficulty: "easy",
+        category: "banking",
+    },
+    {
+        id: "16",
+        subject: "Запит на підтвердження платежу - замовлення #987654",
+        from: "payments@2checkout.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Ми отримали спробу платежу за замовленням #987654 у сумі 49.99 USD, але вона не була завершена.</p>
+        <p>Замовлення:</p>
+        <ul>
+          <li>Товар: Adobe Creative Cloud - річна підписка</li>
+          <li>Вартість: $49.99</li>
+          <li>Спосіб оплати: Visa ****4532</li>
+          <li>Статус: Очікує підтвердження</li>
+        </ul>
+        <p>Можливі причини:</p>
+        <ul>
+          <li>Картка не розпізнана системою</li>
+          <li>Недостатньо коштів</li>
+          <li>Адреса не відповідає записам у банку</li>
+        </ul>
+        <p><a href="https://2checkout.com/update-payment?order=987654">Повторити платіж</a></p>
+        <p>Якщо проблема залишиться, зв'яжіться з нами: support@2checkout.com</p>
+        <p>2Checkout Processing</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "2Checkout - легітимна платіжна система, але адреса payments@2checkout.com може бути спуфована",
+            "Посилання веде на сайт 2checkout.com, але може бути фальшивим",
+            "Деталі замовлення виглядають реалістично",
+            "Запит на повторення платежу - може веести на фальшиву сторінку для крадіжки даних карти",
+            "Реалістичні причини невдачі платежу роблять це більш переконливим",
+        ],
+        explanation:
+            "Це фішинг, що видається як проблема з платежем від 2Checkout. Хоча система і компанія існують, це може бути спуфована адреса. Посилання може вести на фальшивий сайт, збирати дані карти. Завжди перевіряйте домен у адресному рядку браузера.",
+        difficulty: "hard",
+        category: "payment",
+    },
+    {
+        id: "17",
+        subject: "Дякуємо за реєстрацію на вебінар",
+        from: "webinars@microsoft.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <div style="background: #00A4EF; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+          <h2>Реєстрація підтверджена!</h2>
+        </div>
+        <p>Привіт,</p>
+        <p>Дякуємо за реєстрацію на наш вебінар:</p>
+        <p><strong>"Майбутнє Azure: Нові можливості для хмарних архітекторів"</strong></p>
+        <p>Деталі:</p>
+        <ul>
+          <li>Дата: 15 листопада 2025</li>
+          <li>Час: 14:00 UTC</li>
+          <li>Тривалість: 2 години</li>
+          <li>Мова: Англійська</li>
+        </ul>
+        <p>Посилання для входу буде надіслано за 1 день до вебінару на цю адресу електронної пошти.</p>
+        <p>Поточна реєстрація: 2,847 учасників</p>
+        <p>Докладніше про вебінар та спікерів:</p>
+        <a href="https://microsoft.com/events/webinar-2025-november">https://microsoft.com/events/webinar-2025-november</a>
+        <p>Якщо у вас є питання, напишіть на events@microsoft.com</p>
+        <p>До зустрічі на вебінарі!<br/>Microsoft Events Team</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса webinars@microsoft.com є офіційною для Microsoft",
+            "Посилання веде на офіційний домен microsoft.com",
+            "Реалістичні деталі вебінару",
+            "Посилання Zoom буде надіслано пізніше, а не негайно (безпечне)",
+            "Не запитує будь-яку особисту інформацію у листі",
+        ],
+        explanation:
+            "Це легітимне підтвердження реєстрації на вебінар від Microsoft. Надіслано з офіційної адреси, посилання вказує на офіційний домен, та не запитує оновлення особистої інформації.",
+        difficulty: "hard",
+        category: "webinar",
+    },
+    {
+        id: "18",
+        subject: "Гарячі пропозиції з ваших улюблених брендів",
+        from: "promotions@newmail-marketing.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3cd;">
+        <h2 style="color: #ff6b00;">ГАРЯЧІ ПРОПОЗИЦІЇ ТІЛЬКИ ДЛЯ ВАС!</h2>
+        <p>Ви отримали цю пропозицію, оскільки раніше кліпали на наші рекламні посилання.</p>
+        <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 5px;">
+          <h3>Nike - Скидка 50% на спортивний одяг</h3>
+          <p><a href="https://nike-promo-deals.org/discount50">Отримати пропозицію</a></p>
+        </div>
+        <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 5px;">
+          <h3>Amazon - Безкоштовна доставка за замовлення від $25</h3>
+          <p><a href="https://amazon-freeshipping.ru/apply">Активувати</a></p>
+        </div>
+        <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 5px;">
+          <h3>Apple - Нові iPhone за спеціальною ціною</h3>
+          <p><a href="https://apple-exclusive-price.biz/iphone15pro">Дізнатись більше</a></p>
+        </div>
+        <p style="margin-top: 30px; font-size: 12px; color: #666;">
+          Якщо ви не хочете більше отримувати такі пропозиції: <a href="https://unsubscribe-newmail.net?email=your@email.com">Відписатися</a>
+        </p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Посилання не ведуть на офіційні сайти брендів, а на підозрілі домени",
+            "Адреса @newmail-marketing.com видається як легітимна маркетингова компанія",
+            "Множинні посилання на популярні бренди намагаються залучити клік",
+            "Кожне посилання веде на окремий фальшивий сайт",
+            "Типова тактика масового фішингу через маркетингову розсилку",
+        ],
+        explanation:
+            "Це масовий фішинг через маркетингову розсилку. Хоча адреса відправника виглядає як маркетингова компанія, посилання ведуть на фальшиві сайти популярних брендів. Мета - зібрати облікові дані користувачів різних сервісів.",
+        difficulty: "medium",
+        category: "marketing",
+    },
+    {
+        id: "19",
+        subject: "Нове повідомлення від служби безпеки",
+        from: "security@message-center.online",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>Сповіщення про безпеку</h3>
+        <p>Ми виявили підозрілу активність на вашому облікунку в соцмережі.</p>
+        <p>Деталі:</p>
+        <ul>
+          <li>Розташування входу: Москва, РФ</li>
+          <li>Тип пристрою: Android (невідомий пристрій)</li>
+          <li>Час входу: 7 листопада 2025, 12:30</li>
+          <li>IP-адреса: 195.154.72.44</li>
+        </ul>
+        <p>Якщо це були ви, проігноруйте це повідомлення.</p>
+        <p>Якщо це були не ви, одразу перевірте безпеку:</p>
+        <a href="https://secure-account-verify.site/check-activity" style="display: inline-block; padding: 10px 20px; background: #e74c3c; color: white; text-decoration: none; border-radius: 5px;">Перевірити активність</a>
+        <p style="margin-top: 20px;">Рекомендуємо:</p>
+        <ul>
+          <li>Змінити пароль</li>
+          <li>Переглянути пристрої, які мають доступ</li>
+          <li>Включити двофакторну аутентифікацію</li>
+        </ul>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса security@message-center.online виглядає офіційно, але не є брендированою адресою соцмережі",
+            'Посилання веде на підозрілий домен "secure-account-verify.site", а не офіційний',
+            "Реалістичні деталі (розташування, пристрій, IP) роблять це переконливим",
+            "Намагається залякати користувача для негайної дії",
+            "Типова схема фішингу через тактику соціальної інженерії та страху",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення про безпеку від соцмережі. Адреса відправника та посилання не є офіційними, хоча деталі виглядають реалістично. Посилання веде на фальшивий сайт для крадіжки облікових даних.",
+        difficulty: "hard",
+        category: "social-media",
+    },
+    {
+        id: "20",
+        subject: "Лист від вашого агента з нерухомості",
+        from: "property@realestategroup.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <div style="border-left: 4px solid #3498db; padding-left: 15px;">
+          <h3>Нова розглянута нерухомість - вам може сподобатись!</h3>
+        </div>
+        <p>Привіт,</p>
+        <p>Володимир Петренко - ваш агент з нерухомості. Я знайшов для вас кілька нових об\'єктів, які відповідають вашим критеріям.</p>
+        <h4>Пропозиція #1 - Квартира в Подолі</h4>
+        <ul>
+          <li>Адреса: вул. Хмельницького, 47</li>
+          <li>Площа: 89 м²</li>
+          <li>Кімнати: 3</li>
+          <li>Поверх: 4/9</li>
+          <li>Ремонт: Євро</li>
+          <li>Вартість: 450,000 USD</li>
+        </ul>
+        <h4>Пропозиція #2 - Квартира на Лісовій</h4>
+        <ul>
+          <li>Адреса: вул. Лісова, 12</li>
+          <li>Площа: 120 м²</li>
+          <li>Кімнати: 4</li>
+          <li>Поверх: 8/16</li>
+          <li>Ремонт: Люкс</li>
+          <li>Вартість: 580,000 USD</li>
+        </ul>
+        <p>Якщо вам цікаво, я можу організувати огляд цього тижня. Ці об\'єкти користуються попитом, тому рекомендую швидко.</p>
+        <p>Звіртеся мені: +38 (050) 123-45-67 або відповідьте на цей лист.</p>
+        <p>З повагою,<br/>Володимир Петренко<br/>Старший агент<br/>RealEstateGroup<br/>office@realestategroup.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса property@realestategroup.ua відповідає компанії з нерухомості",
+            "Реалістичні деталі про об'єкти нерухомості та вартість",
+            "Контактна інформація згадана та повна (телефон, email)",
+            "Професійний тон та підпис з посадою",
+            "Не запитує внесення авансу або персональних даних",
+        ],
+        explanation:
+            "Це легітимне повідомлення від агента з нерухомості. Містить реалістичні деталі про об'єкти, офіційну контактну інформацію компанії, та професійний тон. Агенти регулярно розсилають такі пропозиції своїм клієнтам.",
+        difficulty: "easy",
+        category: "realestate",
+    },
+    {
+        id: "21",
+        subject: "Акцион! Ваш код на знижку готовий",
+        from: "support@bestshopping-deals.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <div style="max-width: 600px; margin: 0 auto;">
+          <h2>🎉 ВІТАЄМО! У вас є спеціальний код</h2>
+          <p>Ви отримали персональну 70% знижку на все в нашому магазині!</p>
+          <p><strong>Ваш код: LUCKY70SAVE</strong></p>
+          <p>Цей код дійсний тільки 24 години. Не пропустіть!</p>
+          <p><a href="https://bestshopping-deals.store/checkout?code=LUCKY70SAVE" style="display: inline-block; padding: 15px 30px; background: white; color: #667eea; text-decoration: none; border-radius: 5px; font-weight: bold;">Активувати код</a></p>
+          <p style="margin-top: 30px; font-size: 12px;">Ліміт: Перші 100 покупців</p>
+        </div>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            'Домен "bestshopping-deals.store" не є офіційним магазином',
+            "Надмірно привабливе пропозиція (70% знижка) для залучення клікання",
+            "Термін дії 24 години - тактика маніпуляції для поспішної дії",
+            "Посилання веде на невідомий сайт замість відомого магазину",
+            "Адреса support@bestshopping-deals.com видається як універсальна розсилка",
+        ],
+        explanation:
+            "Це фішинг через привабливу пропозицію. Шахраї намагаються залучити клік на посилання, яке веде на фальшиву сторінку для крадіжки даних карти. Реальні магазини не відправляють такі персональні коди через емейл із невідомих доменів.",
+        difficulty: "medium",
+        category: "ecommerce",
+    },
+    {
+        id: "22",
+        subject: "Верифікація вашого Viber рахунку",
+        from: "verify@viber-secure.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Ми виявили нову спробу входу до вашого Viber рахунку з незнайомого місцеперебування.</p>
+        <p>Деталі входу:</p>
+        <ul>
+          <li>Місце: Київ, Україна</li>
+          <li>Пристрій: iPhone 15 Pro</li>
+          <li>Час: 7 листопада 2025, 19:45</li>
+          <li>IP: 185.220.101.45</li>
+        </ul>
+        <p>Якщо це були ви, можете проігнорувати.</p>
+        <p>Якщо це були не ви, верифікуйте свій рахунок:</p>
+        <a href="https://viber-account-verify.net/secure/verify" style="display: inline-block; padding: 10px 20px; background: #40a8ff; color: white; text-decoration: none; border-radius: 5px;">Верифікувати рахунок</a>
+        <p style="margin-top: 20px;">Рекомендуємо також змінити пароль на більш складний.</p>
+        <p>З повагою,<br/>Viber Security Team</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса verify@viber-secure.net не є офіційною адресою Viber",
+            "Посилання веде на підозрілий домен viber-account-verify.net",
+            "Viber не відправляє такі повідомлення про верифікацію через емейл",
+            "Реалістичні деталі входу намагаються залякати користувача",
+            "Вимога негайної верифікації - техніка соціальної інженерії",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення безпеки від Viber. Посилання веде на фальшивий сайт для крадіжки облікових даних. Viber зазвичай не верифікує рахунки через емейл - вони надсилають коди SMS або всередину програми.",
+        difficulty: "hard",
+        category: "messaging",
+    },
+    {
+        id: "23",
+        subject: "Гарантована зарплата - $5000 за тиждень!",
+        from: "jobs@easy-money-online.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff9e6;">
+        <h2 style="color: #ff6b00;">💰 ЗАРОБЛЯЙТЕ ЛЕГКО! 💰</h2>
+        <p>Ви знайшли найлегший спосіб заробляти гроші!</p>
+        <p>✅ Гарантована зарплата: $5,000 за тиждень</p>
+        <p>✅ Робота з дому</p>
+        <p>✅ Без досвіду</p>
+        <p>✅ Негайний старт</p>
+        <p>✅ Виплати щодня</p>
+        <p>Щоб почати, вам потрібно:</p>
+        <ol>
+          <li>Зареєструватися (30 секунд)</li>
+          <li>Внести стартовий капітал $199</li>
+          <li>Починати заробляти!</li>
+        </ol>
+        <p><a href="https://easy-money-register.biz/start" style="display: inline-block; padding: 15px 30px; background: #ff6b00; color: white; text-decoration: none; border-radius: 5px; font-size: 18px;">РОЗПОЧАТИ ЗАРОБІТОК</a></p>
+        <p style="margin-top: 20px; color: #666; font-size: 12px;">⚠️ Місця обмежені! Тільки 50 людей можуть приєднатися сьогодні</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Нереалістичні обіцянки (гарантована зарплата $5000/тиждень без досвіду)",
+            "Домен easy-money-online.biz - явно шахрайський",
+            "Запит на внесення стартового капіталу - класична схема лохотрону",
+            "Термінове відчуття (тільки 50 місць) - маніпуляція",
+            "Дуже мала інформація про реальну роботу",
+        ],
+        explanation:
+            "Це класичний лохотрон на прибуток. Шахраї обіцяють неможливо високі заробітки для залучення людей, які затим просять стартовий капітал. Гроші ніколи не буде повернено. Легітимні роботи не потребують авансового платежу.",
+        difficulty: "easy",
+        category: "job-scam",
+    },
+    {
+        id: "24",
+        subject: "Акцион на вирішення проблем з ПК - Спеціальна пропозиція",
+        from: "pcoptimizer@system-fix-pro.ru",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffe0e0;">
+        <h3>⚙️ ВАШ КОМП'ЮТЕР ПОТРЕБУЄ ОБСЛУГОВУВАННЯ</h3>
+        <p>Наша система виявила:</p>
+        <ul>
+          <li>❌ 847 невирішених помилок</li>
+          <li>❌ 156 застарілих драйверів</li>
+          <li>❌ 2.3 ГБ тимчасових файлів</li>
+          <li>❌ Можливе заразження малвером</li>
+        </ul>
+        <p><strong>Ваш комп'ютер працює на 34% ефективності!</strong></p>
+        <p>Завантажте наш професійний оптимізатор для миттєвого виправлення:</p>
+        <a href="https://pc-optimizer-download.ru/install" style="display: inline-block; padding: 12px 25px; background: #ff4444; color: white; text-decoration: none; border-radius: 5px; margin: 15px 0;">ЗАВАНТАЖИТИ ОПТИМІЗАТОР ЗАРАЗ</a>
+        <p>Спеціальна пропозиція: Тільки сьогодні - 80% знижка! Регулярна ціна: $99, зараз: $19.99</p>
+        <p>⏰ Пропозиція дійсна до кінця дня!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен system-fix-pro.ru - явно шахрайський (рос. розширення, підозріле ім'я)",
+            "Нереалістичні параметри помилок, вигадані для залякування",
+            "Вимога завантажити програму з невідомого джерела",
+            "Посилання на файл з підозрілого домену",
+            "Тактика наляку для поспішної дії",
+        ],
+        explanation:
+            "Це класична схема поширення малвера. Вимислені параметри ошибок намагаються залякати користувача для завантаження шкідливої програми. Посилання веде на файл, який перетворюється на вірус, спам або інший малвер. Реальні антивіруси не розповсюджуються таким чином.",
+        difficulty: "medium",
+        category: "malware",
+    },
+    {
+        id: "25",
+        subject: "Онлайн-консультація з дерматологом - Безкоштовна сеанс",
+        from: "consultation@telehealth-clinic.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <div style="border: 2px solid #4CAF50; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+          <h3>🏥 TeleHealth Clinic</h3>
+          <p>Онлайн-консультація з дерматологом</p>
+        </div>
+        <p>Привіт,</p>
+        <p>Ми рекомендуємо вам безкоштовну консультацію з нашим досвідченим дерматологом д-р Іриною Мясніковою.</p>
+        <p>Це ваша можливість:</p>
+        <ul>
+          <li>✓ Отримати професійну оцінку шкіри</li>
+          <li>✓ Обговорити проблеми з дерматитом, акне або псоріазом</li>
+          <li>✓ Отримати персональні рекомендації лікування</li>
+          <li>✓ Все це БЕЗКОШТОВНО!</li>
+        </ul>
+        <p>Запишіть час зустрічі:</p>
+        <p><strong>Доступні терміни:</strong></p>
+        <ul>
+          <li>8 листопада - 10:00, 14:00, 18:00</li>
+          <li>9 листопада - 11:00, 15:00, 19:00</li>
+          <li>10 листопада - 09:00, 13:00, 17:00</li>
+        </ul>
+        <p>Щоб записатися на консультацію:</p>
+        <a href="https://telehealth-clinic.com/book-consultation?specialty=dermatology" style="display: inline-block; padding: 12px 25px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Записатися на консультацію</a>
+        <p style="margin-top: 20px;">Примітка: Консультація проводиться через Zoom. Посилання буде надіслано за день до сеансу.</p>
+        <p>З повагою,<br/>TeleHealth Clinic<br/>support@telehealth-clinic.com</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса consultation@telehealth-clinic.com є офіційною для компанії телемедицини",
+            "Посилання веде на офіційний домен telehealth-clinic.com",
+            "Реалістичні терміни доступних сеансів",
+            "Професійний тон та формат",
+            "Вказана конкретна спеціальність та лікар",
+            "Не запитує платежі чи персональні дані авансово",
+        ],
+        explanation:
+            "Це легітимне повідомлення від компанії телемедицини про пропозицію безкоштовної консультації. Адреса відправника та посилання є офіційними. Компанії телемедицини регулярно пропонують безкоштовні консультації як маркетингову стратегію.",
+        difficulty: "hard",
+        category: "telehealth",
+    },
+    {
+        id: "26",
+        subject: "Відповідь на вашу заявку про прикладу",
+        from: "hr@globaltechcorp.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Дякуємо за вашу заявку на посаду Senior Software Developer у GlobalTech Corp.</p>
+        <p>Ми радісно повідомляємо, що ваша заявка пройшла першиу круглий відбору!</p>
+        <p>Ось наступні кроки:</p>
+        <ol>
+          <li><strong>Первинна оцінка</strong> (вже завершено ✓)</li>
+          <li><strong>Технічний тест</strong> - 13 листопада о 10:00</li>
+          <li><strong>Интервью з HR</strong> - 15 листопада</li>
+          <li><strong>Інтервю з командою</strong> - 17 листопада</li>
+          <li><strong>Фінальна пропозиція</strong> - до 20 листопада</li>
+        </ol>
+        <p>Деталі технічного тесту:</p>
+        <ul>
+          <li>Формат: Online (Zoom)</li>
+          <li>Тривалість: 90 хвилин</li>
+          <li>Теми: JavaScript, React, системне дизайн</li>
+          <li>Посилання буде надіслано за день до тесту</li>
+        </ul>
+        <p>Якщо у вас є запитання, звіртеся до мене:</p>
+        <p>Email: hr@globaltechcorp.ua<br/>Phone: +38 (050) 234-56-78</p>
+        <p>Вітаємо знову, і бажаємо вам успіху!</p>
+        <p>З повагою,<br/>Марія Коваленко<br/>HR Manager<br/>GlobalTech Corp</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса hr@globaltechcorp.ua є офіційною для компанії",
+            "Містить точну послідовність етапів найму",
+            "Реалістичні деталі про технічний тест",
+            "Конкретні дати та час запланованих заходів",
+            "Повна контактна інформація з реальним номером телефону",
+            "Професійний тон та підпис з посадою",
+            "Посилання Zoom буде надіслано пізніше, не одразу в листі",
+        ],
+        explanation:
+            "Це легітимне повідомлення від HR-відділу про прийняття на наступний етап найму. Адреса, деталі процесу найму та контактна інформація виглядають реалістично. Компанії регулярно надсилають такі листи кандидатам, які пройшли відбір.",
+        difficulty: "hard",
+        category: "recruitment",
+    },
+    {
+        id: "27",
+        subject: "СКОРОТИТИ ВИТРАТИ НА ІНТЕРНЕТ: Відкладіть 60%",
+        from: "deals@internet-save-now.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(to right, #ffd700, #ffed4e);">
+        <h2 style="color: #ff0000; text-align: center;">🔥 ЕКСКЛЮЗИВНА ПРОПОЗИЦІЯ 🔥</h2>
+        <p style="text-align: center; font-size: 20px; color: #ff0000;">Скоротіть рахунки за інтернет на 60%!</p>
+        <p>Ми знайшли для вас розширене підключення за ціною, яку ви не уявляєте!</p>
+        <p><strong>Що ви отримаєте:</strong></p>
+        <ul>
+          <li>🚀 Швидкість: 1 Гбіт/с (від поточного провайдера)</li>
+          <li>💰 Ціна: тільки $19.99/місяць (замість $49.99)</li>
+          <li>📱 Включено: мобільна лінія</li>
+          <li>📺 Включено: 500+ каналів ТВ</li>
+          <li>🎁 ПОДАРУНОК: Безкоштовний маршрутизатор WiFi 6</li>
+        </ul>
+        <p style="text-align: center; margin: 20px 0;">
+          <a href="https://internet-deals-activate.net/claim-offer" style="display: inline-block; padding: 15px 35px; background: #ff0000; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold;">АКТИВУВАТИ ПРОПОЗИЦЮ ЗАРАЗ</a>
+        </p>
+        <p style="color: #666; font-size: 12px;">⏰ Це дійсна тільки для перших 100 клієнтів! Поспішайте!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен internet-save-now.com не належить жодному реальному провайдеру",
+            "Посилання веде на очевидно фальшивий сайт internet-deals-activate.net",
+            "Нереалістична комбінація послуг (інтернет + мобіль + ТВ) за такою низькою ціною",
+            "Завищені обіцянки та подарунки для залучення клікання",
+            "Типова схема фішингу через заманливу пропозицію",
+        ],
+        explanation:
+            "Це фішинг, видаючись як спеціальна пропозиція від інтернет-провайдера. Посилання веде на фальшивий сайт, який намагається зібрати персональні дані, номер карти або банківські реквізити. Реальні провайдери не розсилають такі звичайні пропозиції.",
+        difficulty: "medium",
+        category: "telecom",
+    },
+    {
+        id: "28",
+        subject: "Напоминаніе про позиції для огляду рахунку",
+        from: "compliance@ukrbank.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa;">
+        <p>Привіт,</p>
+        <p>Згідно з вимогами Національного банку України (НБУ) щодо KYC (Know Your Customer), нам потрібно оновити вашу інформацію для продовження обслуговування.</p>
+        <p>Це стандартна процедура верифікації для всіх клієнтів. Оновлення потрібна від:</p>
+        <ul>
+          <li>Паспортні дані та серійний номер</li>
+          <li>Адреса проживання</li>
+          <li>Джерела доходу</li>
+          <li>Фото паспорту та селфі з паспортом</li>
+        </ul>
+        <p><strong>Важливо:</strong> Цей процес потрібно завершити до 30 листопада 2025. Якщо інформація не буде оновлена, ваш рахунок буде заморожено.</p>
+        <p>Для безпеки ми проводимо верифікацію через наш захищений портал:</p>
+        <a href="https://ukrbank.com/kyc-verification" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">Оновити інформацію</a>
+        <p style="margin-top: 20px; font-size: 12px; color: #666;">Примітка: УкрБанк ніколи не запитує ваші паролі. Не діліться ними ні з ким.</p>
+        <p>З повагою,<br/>Служба комплаєнсу<br/>УкрБанк</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса compliance@ukrbank.com є офіційною для УкрБанку",
+            "Посилання веде на офіційний домен ukrbank.com",
+            "KYC верифікація дійсно вимагається регуляторами (НБУ)",
+            "Реалістичні терміни (30 листопада) та наслідки",
+            "Професійний тон та точна інформація про вимоги",
+            "Включає примітку про безпеку паролів",
+        ],
+        explanation:
+            "Це легітимне повідомлення від банку про необхідну KYC верифікацію. Національний банк України дійсно вимагає регулярного оновлення інформації про клієнтів. Адреса та посилання є офіційними, а процес описаний правильно.",
+        difficulty: "hard",
+        category: "banking",
+    },
+    {
+        id: "29",
+        subject: "Повідомлення про оновлення вашої підписки на Netflix",
+        from: "billing@netflix.secure.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>Ваш спосіб оплати для Netflix не міг бути обробленим для поточного платежу.</p>
+        <p>Деталі:</p>
+        <ul>
+          <li>Дата спробу платежу: 7 листопада 2025</li>
+          <li>Сума: €14.99</li>
+          <li>Картка закінчується на: ****4892</li>
+          <li>Помилка: Недостатньо коштів / Картка відхилена</li>
+        </ul>
+        <p>Для продовження перегляду контенту на Netflix, будь ласка, оновіть ваш спосіб оплати:</p>
+        <a href="https://netflix-billing-update.net/payment-update" style="display: inline-block; padding: 10px 20px; background: #e50914; color: white; text-decoration: none; border-radius: 5px;">Оновити способ оплати</a>
+        <p>Якщо ви не оновите информацію протягом 48 годин, ваш рахунок буде заморожено.</p>
+        <p>Дякуємо за розуміння.<br/>Netflix Billing Support</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса billing@netflix.secure.net не є офіційною адресою Netflix",
+            "Посилання веде на підозрілий домен netflix-billing-update.net замість netflix.com",
+            "Netflix використовує domene netflix.com, а не .net",
+            "Запит на оновлення способу оплати через емейл-посилання - сумнівна практика",
+            "Загроза заморозити рахунок за 48 годин - техніка маніпуляції",
+        ],
+        explanation:
+            "Це фішинг, видаючись як повідомлення про проблему платежу від Netflix. Адреса та посилання не є офіційними. Netflix майже ніколи не запитує оновлення способу оплати через емейл - користувачів просять зайти на сайт самостійно. Посилання веде на фальшивий сайт для крадіжки даних карти.",
+        difficulty: "hard",
+        category: "streaming",
+    },
+    {
+        id: "30",
+        subject: "Інформація про успішне резервне копіювання даних",
+        from: "backup@cloud-storage-service.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f0f8ff;">
+        <h3>☁️ Резервне копіювання завершено успішно</h3>
+        <p>Ваші дані успішно скопійовані в хмару.</p>
+        <p><strong>Деталі резервної копії:</strong></p>
+        <ul>
+          <li>Дата резервної копії: 7 листопада 2025, 02:15</li>
+          <li>Розмір: 245 ГБ</li>
+          <li>Дата останньої резервної копії: 5 листопада 2025</li>
+          <li>Статус: ✓ Успішно</li>
+          <li>Наступна автоматична резервна копія: 9 листопада</li>
+        </ul>
+        <p><strong>Облікові записи, що знаходяться на резервній копії:</strong></p>
+        <ul>
+          <li>Gmail</li>
+          <li>OneDrive</li>
+          <li>Фото та відео</li>
+          <li>Документи та електронні таблиці</li>
+          <li>Налаштування системи</li>
+        </ul>
+        <p>Для керування налаштуваннями резервного копіювання:</p>
+        <a href="https://cloud-storage-service.com/backup-settings" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">Перейти до налаштувань</a>
+        <p style="margin-top: 20px; font-size: 12px; color: #666;">Примітка: Ви отримуєте цей лист тому, що маєте вмикнене сповіщення про завершення резервного копіювання.</p>
+        <p>З повагою,<br/>Cloud Storage Service</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса backup@cloud-storage-service.com видається офіційною для сервісу",
+            "Посилання веде на офіційний домен cloud-storage-service.com",
+            "Реалістичні деталі про розмір, дати та типи файлів",
+            "Зазначена інформація про облікові записи",
+            "Професійний формат та тон",
+            "Примітка про налаштування сповіщень вказує на легітимність",
+            "Не запитує оновлення персональних даних",
+        ],
+        explanation:
+            "Це легітимне сповіщення про успішне резервне копіювання від хмарного сервісу. Адреса та посилання є офіційними. Такі повідомлення регулярно надсилаються користувачам, які мають вмикнені автоматичні резервні копії та сповіщення про їх завершення.",
+        difficulty: "easy",
+        category: "cloud",
+    },
+    {
+        id: "31",
+        subject: "Звіт про скоротення штату - Конфіденційно",
+        from: "management@corporateinc.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <p>Привіт,</p>
+        <p>На конфіденційній нараді керівництва була обговорена реструктуризація компанії.</p>
+        <p>Нижче список посад, які будуть ліквідовані:</p>
+        <ul>
+          <li>Senior Developers (2 особи)</li>
+          <li>QA Engineers (3 особи)</li>
+          <li>Marketing Specialists (1 особа)</li>
+        </ul>
+        <p>Якщо ваша посада у списку, вас запросять на зустріч з HR.</p>
+        <p>Просимо зберігати це в конфіденційності до офіційного оголошення 15 листопада.</p>
+        <p>З повагою,<br/>Генеральний директор</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Конфіденційна інформація розповсюджується через звичайний емейл",
+            "Реальні керівники не розсилають такі звіти員工одиничним емейлом",
+            "Вимога молчання створює атмосферу прихованості",
+            "Посилання на офіційну зустріч з HR - тактика для залякування",
+            "Типова схема фішингу для крадіжки конфіденційної інформації",
+        ],
+        explanation:
+            "Це фішинг, видаючись як конфіденційна корпоративна інформація. Шахраї намагаються збудити цікавість та довіру до листа, щоб користувач клікнув на посилання або розкрив свої облікові дані. Реальні конфіденційні дані не розповсюджуються через емейл.",
+        difficulty: "medium",
+        category: "company",
+    },
+    {
+        id: "32",
+        subject: "Скачай нашу нову мобільну програму",
+        from: "apps@mobmessenger-official.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h3>📱 MobMessenger - Оновлення програми</h3>
+        <p>Привіт,</p>
+        <p>Ми випустили нову версію мобільної програми MobMessenger з покращенною безпекою та швидкістю.</p>
+        <p>Нові функції:</p>
+        <ul>
+          <li>✓ Шифрування кінець-в-кінець</li>
+          <li>✓ Групові відеовзивы</li>
+          <li>✓ Облачне резервне копіювання</li>
+          <li>✓ Багато нових емодзі</li>
+        </ul>
+        <p>Завантажити програму:</p>
+        <a href="https://mobmessenger-app-download.net/install-now" style="display: inline-block; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Завантажити</a>
+        <p style="margin-top: 20px;">Версія: 8.2.1 | Розмір: 145 MB</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Посилання на завантаження не веде на офіційні магазини (App Store, Google Play)",
+            "Домен mobmessenger-app-download.net - підозріла адреса",
+            "Емейл адреса apps@mobmessenger-official.com видається офіційною, але домен сумнівний",
+            "Посилання веде на пряме завантаження файла, а не на магазин",
+            "Типова схема для поширення шкідливих мобільних програм",
+        ],
+        explanation:
+            "Це фішинг для поширення шкідливої мобільної програми. Замість того, щоб спрямовувати користувачів на офіційні магазини (App Store, Google Play), посилання веде на фальшивий сайт. Завантажена програма може бути вірусом або шпигуном.",
+        difficulty: "medium",
+        category: "mobile",
+    },
+    {
+        id: "33",
+        subject: "Запрошення на ексклюзивний вебінар про крипто",
+        from: "events@crypto-wealth-summit.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff8e1;">
+        <h2>💎 CRYPTO WEALTH SUMMIT 2025</h2>
+        <p>Вас запрошено на ексклюзивний віртуальний вебінар!</p>
+        <p><strong>Тема:</strong> "Як збагатитися на криптовалютах: Стратегії мільйонерів"</p>
+        <p><strong>Спікери:</strong></p>
+        <ul>
+          <li>Марк Джонсон - Крипто-мільйонер</li>
+          <li>Ірина Петренко - Фінансова консультантка</li>
+          <li>Том Сміт - Інвестор</li>
+        </ul>
+        <p><strong>Дата:</strong> 15 листопада о 19:00</p>
+        <p><strong>Місце:</strong> Zoom</p>
+        <p>Участь БЕЗКОШТОВНА, але потрібна реєстрація:</p>
+        <a href="https://crypto-summit-register.biz/join" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Зареєструватися</a>
+        <p style="margin-top: 20px; color: #ff6b00;"><strong>⚠️ Місця обмежені! Тільки 200 учасників!</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен crypto-wealth-summit.org не є перевіреним криптовалютним чи фінансовим сайтом",
+            "Нереалістичні обіцянки про збагачення на криптовалютах",
+            "Форма реєстрації на сайті може запитувати персональні дані",
+            "Типова схема лохотрону для крипто-новачків",
+            "Привабливі ім'я спікерів виглядають вигадано",
+        ],
+        explanation:
+            "Це фішинг через привабливу пропозицію про вебінар. Вебінари про крипто часто використовуються як приманка для влаштування інвестиційного лохотрону. Реєстрація може вимагати персональних даних або кредитної карти.",
+        difficulty: "hard",
+        category: "cryptocurrency",
+    },
+    {
+        id: "34",
+        subject: "Зупинено: Неавторизована спроба доступу",
+        from: "security@dropbox.verify.me",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffebee;">
+        <h2 style="color: #c62828;">🔒 ПОПЕРЕДЖЕННЯ ПРО БЕЗПЕКУ</h2>
+        <p>Ми виявили неавторизовану спробу доступу до вашого Dropbox рахунку.</p>
+        <p>Деталі:</p>
+        <ul>
+          <li>Час спробу: 7 листопада, 18:23 UTC</li>
+          <li>Місце: Москва, РФ</li>
+          <li>Пристрій: Linux (невідомий)</li>
+          <li>IP-адреса: 195.154.11.222</li>
+        </ul>
+        <p>Ми заблокували цю спробу, але рекомендуємо негайно перевірити безпеку свого рахунку:</p>
+        <a href="https://dropbox-security-verify.net/check-account" style="display: inline-block; padding: 12px 25px; background: #d32f2f; color: white; text-decoration: none; border-radius: 5px;">Перевірити безпеку</a>
+        <p style="margin-top: 20px;">Для додаткової захисту включіть двофакторну аутентифікацію.</p>
+        <p>Dropbox Security Team</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса security@dropbox.verify.me не є офіційною Dropbox адресою",
+            "Посилання веде на фальшивий домен dropbox-security-verify.net",
+            "Dropbox використовує домен dropbox.com, а не .verify.me",
+            "Реалістичні деталі про місце та пристрій намагаються залякати",
+            "Вимога негайної верифікації - техніка маніпуляції",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення безпеки від Dropbox. Адреса та посилання не є офіційними. Dropbox не верифікує рахунки через такі емейли - користувачів просять зайти на сайт через браузер.",
+        difficulty: "hard",
+        category: "cloud",
+    },
+    {
+        id: "35",
+        subject: "Запрошення на ваше весілля - Слід підтвердити",
+        from: "invitation@weddingcelebration.ua",
+        body: `
+      <div style="font-family: Georgia, serif; padding: 30px; background: #fce4ec;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: #c2185b;">💍 Ви запрошені! 💍</h2>
+        </div>
+        <p>Дорогий друже!</p>
+        <p>З великою радістю ми запрошуємо вас відзначити найважливіший день нашого життя!</p>
+        <p><strong>Дата:</strong> 22 грудня 2025 року</p>
+        <p><strong>Час:</strong> 17:00</p>
+        <p><strong>Місце:</strong> Готель "Премʼєр", вул. Богдана Хмельницького, 25, Київ</p>
+        <p><strong>Меню:</strong> Невелике запитання щодо переваг в їжі:</p>
+        <ul>
+          <li>Рибні страви</li>
+          <li>М'ясні страви</li>
+          <li>Вегетаріанське меню</li>
+        </ul>
+        <p>Для підтвердження вашої участі:</p>
+        <a href="https://weddingcelebration.ua/rsvp" style="display: inline-block; padding: 12px 25px; background: #c2185b; color: white; text-decoration: none; border-radius: 5px;">Підтвердити присутність</a>
+        <p style="margin-top: 20px;">З нетерпінням чекаємо на вас!</p>
+        <p>З коханням,<br/>Катерина та Василь</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса invitation@weddingcelebration.ua видається офіційною",
+            "Містить конкретні деталі про місце та час",
+            "Реалістичні запитання про меню та переваги",
+            "Професійний формат запрошення",
+            "Посилання RSVP ведеть на офіційний домен",
+            "Не запитує платежі чи персональні дані авансово",
+        ],
+        explanation:
+            "Це легітимне запрошення на весілля. Адреса та посилання виглядають офіційно. Таке запрошення містить всі необхідні деталі і просить лише підтвердження участі.",
+        difficulty: "easy",
+        category: "events",
+    },
+    {
+        id: "36",
+        subject: "Лист від вашого лікаря",
+        from: "dr.ivanov@medclinic.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>Результати аналізів готові</h3>
+        <p>Привіт,</p>
+        <p>Результати ваших аналізів від 5 листопада готові.</p>
+        <p>Ви можете переглянути їх у особистому кабінеті клініки:</p>
+        <a href="https://medclinic.ua/patient-portal">Переглянути результати</a>
+        <p>Якщо у вас виникнуть запитання щодо результатів, телефонуйте в клініку:</p>
+        <p>📞 +38 (044) 500-50-50</p>
+        <p>Деякі результати потребують обговорення. Рекомендуємо записатися на консультацію.</p>
+        <p>З повагою,<br/>Д-р Іван Іванов<br/>Лікар-терапевт<br/>МедКлініка</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса dr.ivanov@medclinic.ua видається офіційною для клініки",
+            "Посилання веде на офіційний домен медичної установи",
+            "Містить конкретне ім'я лікаря та контактну інформацію",
+            "Реалістичний формат повідомлення про результати",
+            "Не запитує персональні дані або платежі в листі",
+        ],
+        explanation:
+            "Це легітимне повідомлення від лікара про готові результати аналізів. Адреса та посилання є офіційними. Медичні установи регулярно надсилають такі сповіщення пацієнтам.",
+        difficulty: "easy",
+        category: "healthcare",
+    },
+    {
+        id: "37",
+        subject: "Виклик системи безпеки: Активуйте бронь акаунту",
+        from: "security-alert@outlook.secure-verify.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3cd;">
+        <h3>⚠️ Сповіщення системи безпеки</h3>
+        <p>Ваш Outlook рахунок потребує невідкладної верифікації.</p>
+        <p>Виявлено:</p>
+        <ul>
+          <li>Множинні невдалі спроби входу</li>
+          <li>Підозріла активність з новим пристроєм</li>
+          <li>Можлива крадіжка пароля</li>
+        </ul>
+        <p>Для захисту вашого рахунку от блокування:</p>
+        <a href="https://outlook-security-center.verify-now.net/protect" style="display: inline-block; padding: 12px 25px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px;">Активувати бронь</a>
+        <p style="margin-top: 20px; color: #856404;">Вам потрібно це зробити в найкоротший час, інакше рахунок буде заблоковано.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса security-alert@outlook.secure-verify.net не є офіційною",
+            "Домен secure-verify.net не належить Microsoft",
+            "Посилання веде на фальшивий сайт outlook-security-center.verify-now.net",
+            "Outlook використовує домен microsoft.com, а не .verify.net",
+            "Загроза блокування рахунку - техніка маніпуляції",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення безпеки від Outlook. Адреса та посилання не є офіційними. Microsoft не верифікує рахунки таким способом - користувачів просять зайти на сайт через браузер.",
+        difficulty: "hard",
+        category: "email",
+    },
+    {
+        id: "38",
+        subject: "Курс іноземної мови - Спеціальна акція",
+        from: "courses@languagemastery.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e3f2fd;">
+        <h2>🌍 Вивчайте іноземну мову 5x швидше!</h2>
+        <p>Ексклюзивна пропозиція для вас!</p>
+        <p>Курс <strong>"Англійська для професіоналів"</strong> за спеціальною ціною!</p>
+        <p><strong>Що включено:</strong></p>
+        <ul>
+          <li>✓ 100+ відеоуроків</li>
+          <li>✓ Живі групові заняття 3x на тиждень</li>
+          <li>✓ Персональний тренер</li>
+          <li>✓ Сертифікат</li>
+          <li>✓ Дожиттєвий доступ</li>
+        </ul>
+        <p><strong>Регулярна ціна:</strong> 15,000₴</p>
+        <p><strong>Ваша ціна:</strong> 4,999₴ <span style="color: #d32f2f;">(-67%)</span></p>
+        <p>Пропозиція дійсна тільки 48 годин!</p>
+        <a href="https://languagemastery.com/enroll" style="display: inline-block; padding: 12px 25px; background: #1976d2; color: white; text-decoration: none; border-radius: 5px;">Записатися на курс</a>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса courses@languagemastery.com видається офіційною",
+            "Посилання веде на офіційний домен languagemastery.com",
+            "Реалістичні деталі про курс",
+            "Поточна акція (48 годин) типова для освітніх компаній",
+            "Професійний формат та опис курсу",
+            "Не запитує персональні дані авансово",
+        ],
+        explanation:
+            "Це легітимне повідомлення про спеціальну пропозицію курсу іноземної мови. Адреса та посилання є офіційними. Компанії онлайн-освіти регулярно пропонують спеціальні акції для залучення студентів.",
+        difficulty: "medium",
+        category: "education",
+    },
+    {
+        id: "39",
+        subject: "Внесіття поправку до документів відповідно до закону",
+        from: "compliance@taxoffice.gov.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <h3>Податковий офіс України</h3>
+        <p>Вам потрібно подати дві річну декларацію щодо податків.</p>
+        <p>Згідно з законом України про податки, фізичні особи мають подати дану декларацію до:</p>
+        <ul>
+          <li><strong>Крайній термін:</strong> 1 грудня 2025</li>
+          <li><strong>Штраф за затримку:</strong> від 2,500₴</li>
+        </ul>
+        <p>Для розпочинання подання декларації:</p>
+        <a href="https://taxoffice.gov.ua/e-filing">Подати декларацію</a>
+        <p>Будьте обережні - дата крайнього терміну близька!</p>
+        <p>Контакт: +38 (044) 545-45-45</p>
+        <p>З повагою,<br/>Податковий офіс України</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса compliance@taxoffice.gov.ua видається офіційною",
+            "Посилання веде на офіційний державний домен taxoffice.gov.ua",
+            "Реалістична інформація про необхідність подання декларації",
+            "Правильна контактна інформація державної установи",
+            "Офіційний тон та формат",
+            "Зазначені реальні терміни подання",
+        ],
+        explanation:
+            "Це легітимне повідомлення від Податкового офісу про необхідність подання річної декларації. Адреса та посилання є офіційними. Держустанови регулярно нагадують громадянам про граничні терміни подання документів.",
+        difficulty: "hard",
+        category: "government",
+    },
+    {
+        id: "40",
+        subject: "Отримайте премію за лояльність у программі",
+        from: "rewards@loyaltyplus.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff8dc;">
+        <h2>🎁 Бали лояльності готові до обміну!</h2>
+        <p>У вас накопилось:</p>
+        <ul>
+          <li><strong>47,500 балів</strong> у програмі LoyaltyPlus</li>
+          <li>Вартість в грошах: 4,750₴</li>
+        </ul>
+        <p>Варіанти обміну:</p>
+        <ul>
+          <li>Грошовий повернення (4,750₴)</li>
+          <li>Подорожні ваучери</li>
+          <li>Електроніка та гаджети</li>
+          <li>Ресторани та розваги</li>
+        </ul>
+        <p>Ваші бали сплачуються в найкоротший час:</p>
+        <a href="https://loyaltyplus.net/redeem-rewards" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Обміняти бали</a>
+        <p style="margin-top: 20px; color: #999; font-size: 12px;">Дійсна до 30 листопада 2025</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен loyaltyplus.net - невідомий для більшості програм лояльності",
+            "Посилання веде на сайт для обміну балів, але домен підозрілий",
+            "Нереалістична кількість накопичених балів",
+            "Пропозиція обміну без попередніх дій від користувача",
+            "Типова схема для крадіжки даних про платіжні карти",
+        ],
+        explanation:
+            "Це фішинг, видаючись як пропозиція обміну балів лояльності. Домен та посилання не є офіційними для жодної відомої програми. Сайт обміну може запитувати персональні дані або номер карти для 'верифікації'.",
+        difficulty: "medium",
+        category: "rewards",
+    },
+    {
+        id: "41",
+        subject: "Ваш політ зареєстровано - Підтвердження бронювання",
+        from: "bookings@skytravel.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e1f5fe;">
+        <h2>✈️ Ваше бронювання підтверджено!</h2>
+        <p>Номер бронювання: SK-2025-1847392</p>
+        <p><strong>Маршрут:</strong> Київ (KBP) → Барселона (BCN)</p>
+        <p><strong>Дата вильоту:</strong> 15 грудня 2025, 10:30</p>
+        <p><strong>Дата прибуття:</strong> 15 грудня 2025, 14:45 (місцевий час)</p>
+        <p><strong>Авіакомпанія:</strong> SkyTravel Airlines</p>
+        <p><strong>Клас обслуговування:</strong> Економ</p>
+        <p>Важливо: Приїжджайте до аеропорту за 3 години до вильоту.</p>
+        <p>Завантажте ваш посадковий талон:</p>
+        <a href="https://skytravel.ua/boarding-pass?ref=SK1847392">Завантажити посадковий талон</a>
+        <p>Якщо у вас виникнуть запитання:</p>
+        <p>📞 +38 (044) 333-22-22<br/>✉️ support@skytravel.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса bookings@skytravel.ua видається офіційною для авіакомпанії",
+            "Посилання веде на офіційний домен skytravel.ua",
+            "Містить конкретні деталі про політ та бронювання",
+            "Реалістичний номер бронювання та коди аеропортів",
+            "Професійний формат підтвердження",
+            "Повна контактна інформація",
+        ],
+        explanation:
+            "Це легітимне підтвердження бронювання авіаквитків від авіакомпанії. Адреса та посилання є офіційними. Авіакомпанії регулярно надсилають такі листи пасажирам з деталями їх рейсів.",
+        difficulty: "easy",
+        category: "travel",
+    },
+    {
+        id: "42",
+        subject: "⚠️ ВИРУС ВИЯВЛЕНО: Очистіть комп'ютер!",
+        from: "antivirus-alert@pc-shield-pro.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #ff0000, #cc0000); color: white;">
+        <h1>🚨 КРИТИЧНЕ ПОПЕРЕДЖЕННЯ 🚨</h1>
+        <p><strong>Ваш комп'ютер ІНФІКОВАНО!</strong></p>
+        <p>Виявлено 3 КРИТИЧНИХ вірусів:</p>
+        <ul>
+          <li>Trojan.Generic.Exploit</li>
+          <li>Ransomware.Crypto-Locker</li>
+          <li>Spyware.Monitor.EXE</li>
+        </ul>
+        <p>НЕГАЙНО очистіть комп'ютер або втратите всі данні!</p>
+        <p>Завантажте антивірус PC Shield Pro:</p>
+        <a href="https://pc-shield-pro.biz/download-antivirus" style="display: inline-block; padding: 15px 30px; background: #ff0000; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold;">ОЧИСТИТИ КОМП'ЮТЕР ЗАРАЗ!</a>
+        <p style="margin-top: 30px;">Залишилось часу: <strong style="font-size: 24px;">24 ГОДИНИ</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен pc-shield-pro.biz - явно шахрайський",
+            "Надмірний страх та наляк для маніпуляції",
+            "Посилання на завантаження програми з невідомого джерела",
+            "Вигадані назви вірусів для підсилення ефекту",
+            "Тактика термінової дії (24 години) для поспішної позиції",
+        ],
+        explanation:
+            "Це класичний scareware - шахрайське ПО, яке видається як антивірус. Вимислені вірусні загрози намагаються залякати користувача для завантаження шкідливої програми. Завантажена програма сама є малвером.",
+        difficulty: "easy",
+        category: "malware",
+    },
+    {
+        id: "43",
+        subject: "Лист від Швейцарського лотерейного фонду",
+        from: "winner@swiss-lottery-fund.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(to bottom, #ff0000, #ffffff);">
+        <h1 style="text-align: center; color: #ff0000;">🎲 ВІТАЄМО! 🎲</h1>
+        <p style="text-align: center; font-size: 24px; color: #ff0000;"><strong>ВИ ВИГРАЛИ €500,000!</strong></p>
+        <p>На Швейцарському міжнародному лотереї ваш номер був обраний ПЕРЕМОЖЦЕМ!</p>
+        <p>Деталі виграшу:</p>
+        <ul>
+          <li>💰 Сума: €500,000 EUR</li>
+          <li>📅 Дата розіграшу: 5 листопада 2025</li>
+          <li>🎫 Ваш номер: #SW-2025-987654</li>
+        </ul>
+        <p>Для отримання вашого виграшу, вам потрібно сплатити комісію (€50 EUR) та податок (10% від виграшу):</p>
+        <a href="https://swiss-lottery-claims.biz/process-payment" style="display: inline-block; padding: 12px 25px; background: #ff0000; color: white; text-decoration: none; border-radius: 5px;">Подати заявку на виграш</a>
+        <p style="margin-top: 20px;"><strong>⏰ Дійсна тільки 7 днів!</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Нереалістичний виграш без участі у лотереї",
+            "Домен swiss-lottery-fund.net - явно фальшивий",
+            "Запит на передоплату за комісію та податки",
+            "Классична схема лотерейного шахрайства",
+            "Termінова дія (7 днів) для маніпуляції",
+        ],
+        explanation:
+            "Це класична схема лотерейного лохотрону. Ви не можете виграти в лотереї, у якій не брали участь. Запит на передоплату - це чистий лохотрон для крадіжки грошей.",
+        difficulty: "easy",
+        category: "lottery",
+    },
+    {
+        id: "44",
+        subject: "Безкоштовна консультація від юриста",
+        from: "consult@legalaid-ukraine.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f3e5f5;">
+        <h2>⚖️ Безкоштовна юридична консультація</h2>
+        <p>Привіт,</p>
+        <p>Юридична фірма "Правова допомога" пропонує вам БЕЗКОШТОВНУ консультацію з досвідченим адвокатом.</p>
+        <p>Нам можемо допомогти вам з:</p>
+        <ul>
+          <li>✓ Сімейне право</li>
+          <li>✓ Трудові спори</li>
+          <li>✓ Питання про нерухомість</li>
+          <li>✓ Адміністративні справи</li>
+        </ul>
+        <p>Як це працює:</p>
+        <ol>
+          <li>Заповніть коротку форму</li>
+          <li>Ми визначимо найкращого адвоката для вас</li>
+          <li>Спілкуйтеся по Zoom або особисто</li>
+        </ol>
+        <p>Записатися на консультацію:</p>
+        <a href="https://legalaid-ukraine.ua/book-consultation">Записатися</a>
+        <p>Телефон: +38 (044) 555-66-77</p>
+        <p>З повагою,<br/>LegalAid Ukraine</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса consult@legalaid-ukraine.ua видається офіційною",
+            "Посилання веде на офіційний домен legalaid-ukraine.ua",
+            "Реалістичні послуги, які надають юридичні фірми",
+            "Повна контактна інформація",
+            "Професійний формат та опис послуг",
+            "Не запитує персональні дані або платежі авансово",
+        ],
+        explanation:
+            "Це легітимне повідомлення від юридичної фірми про пропозицію безкоштовної консультації. Адреса та посилання є офіційними. Юридичні фірми часто пропонують безкоштовні консультації для залучення нових клієнтів.",
+        difficulty: "easy",
+        category: "legal",
+    },
+    {
+        id: "45",
+        subject: "Поновлення підписки - Скидка 50%",
+        from: "subscription@premiummusic.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e0f2f1;">
+        <h2>🎵 Поновіть вашу підписку з 50% знижкою!</h2>
+        <p>Ваша підписка на PremiumMusic завершується 15 листопада.</p>
+        <p>Не втрачайте доступ до мільйонів пісень!</p>
+        <p><strong>Спеціальна пропозиція для вас:</strong></p>
+        <ul>
+          <li>Регулярна ціна: €9.99/місяц</li>
+          <li>Ваша ціна: €4.99/місяц (50% знижка)</li>
+          <li>Період: 3 місяці</li>
+        </ul>
+        <p>Поновити підписку:</p>
+        <a href="https://premiummusic.net/renew-subscription" style="display: inline-block; padding: 12px 25px; background: #009688; color: white; text-decoration: none; border-radius: 5px;">Поновити зараз</a>
+        <p>⏰ Пропозиція дійсна тільки до 14 листопада!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен premiummusic.net - видається офіційним, але може бути спуфований",
+            "Посилання на поновлення з 50% знижкою - привабливо, але підозріло",
+            "Сайт поновлення може запитувати дані карти",
+            "Термінова дія (до 14 листопада) для маніпуляції",
+            "Реальні музичні сервісу не розсилають такі листи з необпрацьованими посиланнями",
+        ],
+        explanation:
+            "Це фішинг, видаючись як пропозиція поновлення підписки. Посилання веде на фальшивий сайт, який запитує дані карти. Реальні музичні сервіси зазвичай управляють підписками через власну облікову запис користувача.",
+        difficulty: "hard",
+        category: "subscription",
+    },
+    {
+        id: "46",
+        subject: "Отримайте безкоштовний тестер продукції",
+        from: "testers@productfeedback-program.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3e0;">
+        <h2>🧪 Будьте тестером нових продуктів!</h2>
+        <p>Ми шукаємо 100 людей для тестування нових продуктів.</p>
+        <p>Як це працює:</p>
+        <ol>
+          <li>Ви отримаєте нові продукти БЕЗКОШТОВНО</li>
+          <li>Ви тестуєте та даєте відгуки</li>
+          <li>Ви можете залишити товар</li>
+          <li>Ви отримаєте бонуси за кожен відгук</li>
+        </ol>
+        <p>Переваги:</p>
+        <ul>
+          <li>💰 Заробіток від €500/місяц</li>
+          <li>📦 Безкоштовні товари</li>
+          <li>🎁 Бонуси та подарунки</li>
+        </ul>
+        <p>Приєднайтеся до нашої програми:</p>
+        <a href="https://productfeedback-program.com/join-testers" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Стати тестером</a>
+        <p>📧 Контакт: testers@productfeedback-program.com</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса testers@productfeedback-program.com видається офіційною",
+            "Посилання веде на домен productfeedback-program.com",
+            "Реалістична програма тестування продуктів",
+            "Реальні компанії залучають тестерів через такі листи",
+            "Форма реєстрації не запитує авансові платежи",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне запрошення приєднатися до програми тестування продуктів. Адреса та посилання виглядають офіційно. Компанії часто залучають людей для тестування та надання відгуків на нові продукти.",
+        difficulty: "hard",
+        category: "marketplace",
+    },
+    {
+        id: "47",
+        subject: "Лист від IRS - Податкова перевірка",
+        from: "audit@irs-verification.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fafafa; border-left: 5px solid #cc0000;">
+        <h3>Internal Revenue Service (IRS)</h3>
+        <p>Вам надіслано офіційне повідомлення про податкову перевірку.</p>
+        <p>Деталі:</p>
+        <ul>
+          <li>Tax ID: #34-5678901</li>
+          <li>Період огляду: 2023-2024</li>
+          <li>Причина: Підозріла мульти-держава доходи</li>
+        </ul>
+        <p>Для завершення перевірки, вам потрібно подати додаткові документи:</p>
+        <ul>
+          <li>Копія паспорту / ID</li>
+          <li>Банківські витяги</li>
+          <li>Фото з документом</li>
+        </ul>
+        <p>Подати документи:</p>
+        <a href="https://irs-tax-audit-verify.biz/submit-documents" style="display: inline-block; padding: 12px 25px; background: #cc0000; color: white; text-decoration: none; border-radius: 5px;">Подати документи</a>
+        <p style="margin-top: 20px;"><strong>⚠️ Крайній термін: 10 днів</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса audit@irs-verification.biz не є офіційною (IRS використовує .gov домени)",
+            "Посилання веде на очевидно фальшивий сайт irs-tax-audit-verify.biz",
+            "IRS не відправляє такі листи через емейл - вони розсилають офіційні письма",
+            "Запит на персональні документи по емейлу - сумнівна практика",
+            "Типова схема фішингу для крадіжки ідентифікаційних даних",
+        ],
+        explanation:
+            "Це фішинг, видаючись як офіційне повідомлення від IRS про податкову перевірку. Посилання веде на фальшивий сайт для крадіжки персональних даних. IRS ніколи не відправляє такі листи - вони розсилають офіційні письма поштою.",
+        difficulty: "hard",
+        category: "government",
+    },
+    {
+        id: "48",
+        subject: "Запрошення на вечірку - Переважна адреса",
+        from: "party@weekendvibes.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="text-align: center;">🎉 ВЕЧІРКА СТОЛІТТЯ! 🎉</h2>
+        <p style="text-align: center;"><strong>Ви запрошені!</strong></p>
+        <p><strong>Дата:</strong> 22 листопада 2025</p>
+        <p><strong>Час:</strong> 22:00 - 06:00</p>
+        <p><strong>Місце:</strong> Weekend Vibes Club, вул. Хрещатик, 20, Київ</p>
+        <p><strong>Що чекаєте:</strong></p>
+        <ul>
+          <li>🎵 DJ та жива музика</li>
+          <li>🍾 Безкоштовні напої</li>
+          <li>🎊 Розіграш призів (iPhone 15!)</li>
+          <li>🎁 Спеціальні гості</li>
+        </ul>
+        <p>Вхід: БЕЗКОШТОВНО для перших 200 гостей</p>
+        <p>Зареєструватися:</p>
+        <a href="https://weekendvibes.ua/register-party" style="display: inline-block; padding: 12px 25px; background: white; color: #764ba2; text-decoration: none; border-radius: 5px; font-weight: bold;">Зареєструватися</a>
+        <p style="margin-top: 20px;">Посилання запрошення: <strong>WEEKENDVIBES22</strong></p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса party@weekendvibes.ua видається офіційною для закладу",
+            "Посилання веде на офіційний домен weekendvibes.ua",
+            "Реалістичні деталі про вечірку",
+            "Типове запрошення від нічного клубу",
+            "Професійний формат",
+            "Не запитує персональні дані авансово",
+        ],
+        explanation:
+            "Це легітимне запрошення на вечірку від нічного клубу. Адреса та посилання є офіційними. Клуби регулярно розсилають запрошення для залучення гостей.",
+        difficulty: "easy",
+        category: "events",
+    },
+    {
+        id: "49",
+        subject: "Перевіра рахунку - Завершіть верифікацію",
+        from: "verify@payoneer-account.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff9e6;">
+        <h3>⚠️ Верифікація рахунку Payoneer</h3>
+        <p>Ваш рахунок Payoneer було заблоковано через невдалу верифікацію.</p>
+        <p>Для повторного активування рахунку:</p>
+        <ol>
+          <li>Завантажте копію паспорту (обидві сторони)</li>
+          <li>Фото себе з паспортом</li>
+          <li>Доказ адреси (рахунок, свідоцтво)</li>
+        </ol>
+        <p>Завантажити документи:</p>
+        <a href="https://payoneer-verify-account.net/upload" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Завантажити документи</a>
+        <p style="margin-top: 20px;">⏰ Якщо не завантажити протягом 3 днів, рахунок буде стерто.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса verify@payoneer-account.net не є офіційною адресою Payoneer",
+            "Посилання веде на підозрілий домен payoneer-verify-account.net",
+            "Payoneer не верифікує рахунки таким способом",
+            "Запит на завантаження копії паспорту та фото - сумнівна практика",
+            "Загроза видалення рахунку - техніка маніпуляції",
+        ],
+        explanation:
+            "Це фішинг, видаючись як верифікація рахунку Payoneer. Посилання веде на фальшивий сайт для крадіжки персональних даних і копій документів. Payoneer не запитує такі документи через емейл.",
+        difficulty: "hard",
+        category: "payment",
+    },
+    {
+        id: "50",
+        subject: "Рецепт з аптеки - Готово до видачі",
+        from: "pharmacy@healthplus.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h3>💊 Ваш рецепт готовий!</h3>
+        <p>Привіт,</p>
+        <p>Ваш рецепт від лікаря готовий до видачі у нашій аптеці.</p>
+        <p>Деталі:</p>
+        <ul>
+          <li><strong>Рецепт №:</strong> HP-287654</li>
+          <li><strong>Лікар:</strong> Д-р Петро Сидоренко</li>
+          <li><strong>Дата: </strong>7 листопада 2025</li>
+          <li><strong>Ліки:</strong> Амоксицилін (антибіотик)</li>
+          <li><strong>Ціна:</strong> 245₴</li>
+        </ul>
+        <p>Ви можете отримати ліки в нашій аптеці:</p>
+        <p>📍 Вул. Грушевського, 5, Київ<br/>📞 +38 (044) 666-77-88</p>
+        <p>Ліки доступні з 09:00 до 20:00.</p>
+        <p>З повагою,<br/>HealthPlus Pharmacy</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса pharmacy@healthplus.ua видається офіційною для аптеки",
+            "Містить конкретні деталі про рецепт",
+            "Реалістичні ціни на ліки",
+            "Повна контактна інформація аптеки",
+            "Не запитує персональні дані або платежі в листі",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення від аптеки про готовий рецепт. Адреса та інформація виглядають офіційно. Аптеки регулярно сповіщають клієнтів про готові рецепти.",
+        difficulty: "easy",
+        category: "healthcare",
+    },
+    {
+        id: "51",
+        subject: "Внесок у благодійність - Отримайте податкову пільгу",
+        from: "donations@charityalliance.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f3f3f3;">
+        <h2>❤️ Підтримайте благодійність - Отримайте податкову пільгу</h2>
+        <p>Благодійна альянс дякує за вашу підтримку!</p>
+        <p>Від вашого минулого внеску розпочалася допомога:</p>
+        <ul>
+          <li>✓ 50 сиротам надали одяг та їжу</li>
+          <li>✓ 10 дітям оплачена операція</li>
+          <li>✓ 200 людям надана медична допомога</li>
+        </ul>
+        <p>Для нових внесків та отримання декларації:</p>
+        <a href="https://charityalliance.org/donate">Зробити внесок</a>
+        <p>Всі внески вище 2,000₴ отримують офіційну квитанцію для податку.</p>
+        <p>Контакт: +38 (044) 200-20-20<br/>Email: info@charityalliance.org</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса donations@charityalliance.org видається офіційною для благодійної організації",
+            "Посилання веде на офіційний домен charityalliance.org",
+            "Реалістичні приклади використання коштів",
+            "Згадується податкова пільга (реальна перевага благодійних внесків)",
+            "Повна контактна інформація",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення від благодійної організації про благодійні внески та податкові пільги. Адреса та посилання є офіційними. Благодійні організації регулярно надсилають такі листи для залучення донорів.",
+        difficulty: "easy",
+        category: "charity",
+    },
+    {
+        id: "52",
+        subject: "Ваш VPN підключення вимикається - Поновіть ліцензію",
+        from: "billing@vpn-secure-plus.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffe0b2;">
+        <h3>🔒 Ваша ліцензія VPN закінчується!</h3>
+        <p>Ваша підписка на VPN Secure Plus завершується 14 листопада 2025.</p>
+        <p>Без поновлення ви втратите:</p>
+        <ul>
+          <li>❌ Захищене інтернет-з'єднання</li>
+          <li>❌ Приховування IP-адреси</li>
+          <li>❌ Доступ до контенту, заблокованого географічно</li>
+          <li>❌ Захист від шпигуна</li>
+        </ul>
+        <p>Поновити ліцензію:</p>
+        <a href="https://vpn-secure-plus.net/renew-license" style="display: inline-block; padding: 12px 25px; background: #ff6f00; color: white; text-decoration: none; border-radius: 5px;">Поновити ліцензію</a>
+        <p><strong>Спеціальна пропозиця для вас:</strong></p>
+        <p>1 рік: €19.99 (замість €29.99)</p>
+        <p>⏰ Дійсна до 13 листопада!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен vpn-secure-plus.net - видається офіційним, але може бути спуфований",
+            "Посилання на поновлення ліцензії з 33% знижкою - привабливо",
+            "VPN сервісу зазвичай управляються через власну облікову запис користувача",
+            "Сайт поновлення може запитувати дані карти",
+            "Реальні VPN не розсилають такі листи для просто поновлення",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення про поновлення ліцензії VPN. Посилання веде на фальшивий сайт для крадіжки даних карти. Реальні VPN сервіси управляють підписками через користувацькі кабінети.",
+        difficulty: "hard",
+        category: "subscription",
+    },
+    {
+        id: "53",
+        subject: "Лист про компенсацію за вібір до суду",
+        from: "compensation@jury-selection-fund.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3cd;">
+        <h3>⚖️ Ви обрані як присяжний!</h3>
+        <p>Вас було обрано як потенційного присяжного для важної справи.</p>
+        <p>Детали:</p>
+        <ul>
+          <li>Справа: Держ. vs. Johnson</li>
+          <li>Місце: Federal Court, District 5</li>
+          <li>Дата: 20 листопада 2025</li>
+          <li>Компенсація: $600 (за 3 дні)</li>
+        </ul>
+        <p>Для підтвердження вашої участі та отримання компенсації:</p>
+        <a href="https://jury-compensation-form.biz/confirm" style="display: inline-block; padding: 12px 25px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">Підтвердити участь</a>
+        <p style="margin-top: 20px;">⏰ Потрібно підтвердити до 10 листопада</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен jury-selection-fund.biz - явно фальшивий",
+            "Посилання веде на очевидно фальшивий сайт jury-compensation-form.biz",
+            "Суди не відправляють запрошення на присяжні через емейл - вони розсилають офіційні письма",
+            "Запит на подання персональних даних через форму - сумнівна практика",
+            "Типова схема фішингу для крадіжки ідентифікаційних даних",
+        ],
+        explanation:
+            "Це фішинг, видаючись як запрошення на присяжні з компенсацією. Суди ніколи не відправляють такі листи - вони розсилають офіційні письма поштою. Форма може запитувати персональні дані та номери документів.",
+        difficulty: "hard",
+        category: "government",
+    },
+    {
+        id: "54",
+        subject: "Зустріч з інвесторами - Презентація стартапу",
+        from: "events@startup-summit.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e1f5fe;">
+        <h2>🚀 Startup Summit 2025</h2>
+        <p>Вас запрошено на ексклюзивну конференцію інвесторів та підприємців!</p>
+        <p><strong>Дата:</strong> 25 листопада 2025</p>
+        <p><strong>Час:</strong> 09:00 - 17:00</p>
+        <p><strong>Місце:</strong> UNIT.City, вул. Сумська, 52, Київ</p>
+        <p><strong>Програма:</strong></p>
+        <ul>
+          <li>Мастер-класи від успішних підприємців</li>
+          <li>Презентації стартапів</li>
+          <li>Нетворкінг з інвесторами</li>
+          <li>Питання та обговорення</li>
+        </ul>
+        <p>Реєстрація: 2,000₴ (включає обід та матеріали)</p>
+        <p>Зареєструватися:</p>
+        <a href="https://startup-summit.ua/register">Зареєструватися</a>
+        <p>Контакт: events@startup-summit.ua | +38 (044) 777-88-99</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса events@startup-summit.ua видається офіційною для конференції",
+            "Посилання веде на офіційний домен startup-summit.ua",
+            "Реалістичні деталі про конференцію та програму",
+            "Розумна ціна реєстрації",
+            "Повна контактна інформація",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне запрошення на стартап конференцію. Адреса та посилання є офіційними. Такі конференції регулярно проводяться для нетворкінгу інвесторів та підприємців.",
+        difficulty: "medium",
+        category: "events",
+    },
+    {
+        id: "55",
+        subject: "Безкоштовний PDF - Як навчитися інвестувати",
+        from: "resources@wealth-mastery.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f1f8e9;">
+        <h2>📚 БЕСПЛАТНИ РЕСУРС: Повний путівник по інвестиціям</h2>
+        <p>Отримайте мій ексклюзивний 200-сторінковий PDF про те, як почати інвестувати з малим капіталом.</p>
+        <p><strong>Що ви дізнаєтесь:</strong></p>
+        <ul>
+          <li>✓ Як почати з $100</li>
+          <li>✓ Найбезпечніші інвестиції для новачків</li>
+          <li>✓ Як розділити портфель</li>
+          <li>✓ Типові помилки та як їх уникнути</li>
+        </ul>
+        <p>Завантажити PDF:</p>
+        <a href="https://wealth-mastery.net/download-guide" style="display: inline-block; padding: 12px 25px; background: #4caf50; color: white; text-decoration: none; border-radius: 5px;">Завантажити PDF</a>
+        <p style="margin-top: 20px;">Примітка: Після завантаження ви отримаєте пропозицію про платні курси.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен wealth-mastery.net - видається як фінансовий сайт, але може бути шахрайський",
+            "Безкоштовний PDF як приманка для збору емейлів",
+            "Посилання завантаження веде на непрозору сторінку",
+            "Файл може містити вірус або шпигун",
+            "Типова схема для отримання контактної інформації для спаму",
+        ],
+        explanation:
+            "Це фішинг через безкоштовний ресурс. Файл PDF може містити вірус або шпигун. Крім того, після завантаження користувач буде залучений на платні курси. Реальні безкоштовні ресурси не запитують емейл для завантаження.",
+        difficulty: "medium",
+        category: "finance",
+    },
+    {
+        id: "56",
+        subject: "Укладення договору - Супт. системи",
+        from: "contracts@company-legal.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>📄 Уповноваження на укладення договору</h3>
+        <p>Привіт,</p>
+        <p>Це лист від юридичного відділу компанії щодо укладення договору в системі e-sign.</p>
+        <p>Детали:</p>
+        <ul>
+          <li>Контрагент: GlobalTech Solutions</li>
+          <li>Тип: Договір про надання послуг</li>
+          <li>Вартість: €5,000</li>
+          <li>Період: 12 місяців</li>
+        </ul>
+        <p>Для переглядання та підписання документа:</p>
+        <a href="https://company-legal.ua/contracts/sign">Переглянути контракт</a>
+        <p>Будь ласка, переглянути та підписати документ до 12 листопада.</p>
+        <p>З повагою,<br/>Юридичний відділ</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса contracts@company-legal.ua видається офіційною",
+            "Посилання веде на офіційний домен company-legal.ua",
+            "Реалістичні деталі про контракт",
+            "Розумна вартість та період",
+            "Професійний формат",
+            "Не запитує персональні дані в листі",
+        ],
+        explanation:
+            "Це легітимне повідомлення від юридичного відділу про укладення контракту. Адреса та посилання є офіційними. Компанії регулярно надсилають листи про укладення контрактів через e-sign системи.",
+        difficulty: "easy",
+        category: "legal",
+    },
+    {
+        id: "57",
+        subject: "Акцион! Встановіть VPN - 80% знижка",
+        from: "offers@vpn-pro-deals.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="text-align: center;">🔐 VPN Pro - 80% ЗНИЖКА 🔐</h2>
+        <p style="text-align: center;"><strong>Тільки сьогодні!</strong></p>
+        <p>Захистіть себе онлайн:</p>
+        <ul>
+          <li>✓ Шифрування 256-bit</li>
+          <li>✓ Швидкість: 10 Гбіт/с</li>
+          <li>✓ 500+ серверів у всьому світі</li>
+          <li>✓ Без логування</li>
+        </ul>
+        <p><strong>Пропозиця:</strong></p>
+        <p>Регулярна ціна: €99.99/рік</p>
+        <p style="font-size: 24px;"><strong>Ваша ціна: €19.99/рік</strong></p>
+        <p>Встановити VPN:</p>
+        <a href="https://vpn-pro-deals.biz/install" style="display: inline-block; padding: 15px 30px; background: white; color: #764ba2; text-decoration: none; border-radius: 5px; font-weight: bold;">ВСТАНОВИТИ ЗАРАЗ</a>
+        <p style="margin-top: 30px;">⏰ Пропозиція дійсна 48 годин!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен vpn-pro-deals.biz - явно шахрайський",
+            "Нереалістична ціна (80% знижка на добру річну підписку)",
+            "Посилання на встановлення програми з невідомого джерела",
+            "Завантажена програма може бути шпигуном",
+            "Типова схема для поширення малвера",
+        ],
+        explanation:
+            "Це фішинг для поширення шкідливої VPN програми. Нереалістична ціна привабляє користувачів для завантаження програми. Завантажена програма може бути шпигуном або сама вам завдасть шкоди.",
+        difficulty: "medium",
+        category: "security",
+    },
+    {
+        id: "58",
+        subject: "Уповільнення роботи комп'ютера? Вирішення знайдено!",
+        from: "support@computer-speed-boost.ru",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffebee;">
+        <h2>⚡ Прискорте ваш комп'ютер у 10 разів!</h2>
+        <p>Чи ваш комп'ютер працює повільно?</p>
+        <p>Ми виявили проблеми на вашому пристрої:</p>
+        <ul>
+          <li>❌ 1,247 розбитих реєстрів</li>
+          <li>❌ 12 ГБ непотрібних файлів</li>
+          <li>❌ 45 застарілих драйверів</li>
+          <li>❌ Запущено 87 фонових процесів</li>
+        </ul>
+        <p><strong>РІШЕННЯ:</strong> ComputerSpeedBoost Pro</p>
+        <p>Завантажити БЕЗКОШТОВНО і очистити комп'ютер:</p>
+        <a href="https://computer-speed-boost.ru/download-free" style="display: inline-block; padding: 15px 30px; background: #ff0000; color: white; text-decoration: none; border-radius: 5px; font-size: 18px;">ЗАВАНТАЖИТИ ЗАРАЗ</a>
+        <p style="margin-top: 20px;"><strong>⚡ Результати за 5 хвилин! ⚡</strong></p>
+        <p style="color: #999; font-size: 12px;">Вимовлені параметри засновані на веб-сканованні</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен computer-speed-boost.ru - явно шахрайський",
+            "Вигадані параметри для залякування користувача",
+            "Посилання на завантаження програми з невідомого джерела",
+            "Завантажена програма сама є малвером або шпигуном",
+            "Типова схема scareware",
+        ],
+        explanation:
+            "Це scareware - шахрайське ПО, яке видається як оптимізатор. Вигадані параметри залякують користувача для завантаження програми. Завантажена програма сама є малвером або показує рекламу і спам.",
+        difficulty: "easy",
+        category: "malware",
+    },
+    {
+        id: "59",
+        subject: "Нова функція: Перевірте ваш кредитний рейтинг",
+        from: "credit@creditscorecheck.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e3f2fd;">
+        <h2>💳 Дізнайтеся свій кредитний рейтинг!</h2>
+        <p>Ми пропонуємо безкоштовну перевірку вашого кредитного рейтингу.</p>
+        <p><strong>Що це включає:</strong></p>
+        <ul>
+          <li>✓ Ваш точний кредитний рейтинг</li>
+          <li>✓ Порівняння зі світовими стандартами</li>
+          <li>✓ Поради для поліпшення рейтингу</li>
+          <li>✓ Моніторинг змін</li>
+        </ul>
+        <p>Перевірити рейтинг БЕЗКОШТОВНО:</p>
+        <a href="https://creditscorecheck.com/check-score" style="display: inline-block; padding: 12px 25px; background: #1976d2; color: white; text-decoration: none; border-radius: 5px;">Перевірити рейтинг</a>
+        <p style="margin-top: 20px;">Примітка: Ви отримаєте детальний звіт та можливість підписатися на преміум послуги.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен creditscorecheck.com - видається офіційно, але може бути спуфований",
+            "Сайт не є аналітичною установою кредитних рейтингів",
+            "Форма для перевірки рейтингу запитує персональні дані",
+            "Збір інформації для ідентифікаційного крадіжки",
+            "Типова схема фішингу для крадіжки персональних даних",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сервіс перевірки кредитного рейтингу. Сайт збирає персональні дані для ідентифікаційної крадіжки. Реальні кредитні рейтинги видають серйозні фінансові установи, а не невідомі вебсайти.",
+        difficulty: "hard",
+        category: "finance",
+    },
+    {
+        id: "60",
+        subject: "Запит на зворотний зв'язок - Поділіться своєю думкою",
+        from: "feedback@productsurvey.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f1f8e9;">
+        <h2>📝 Ваша думка важлива для нас!</h2>
+        <p>Ми розробили новий продукт і хотіли б знати вашу думку.</p>
+        <p><strong>Займе тільки 5 хвилин!</strong></p>
+        <p>Заповнити анкету:</p>
+        <a href="https://productsurvey.ua/feedback" style="display: inline-block; padding: 12px 25px; background: #4caf50; color: white; text-decoration: none; border-radius: 5px;">Заповнити анкету</a>
+        <p style="margin-top: 20px;"><strong>Бонус за участь:</strong></p>
+        <ul>
+          <li>Участь у розіграші €500 подарункового сертифіката</li>
+          <li>Спеціальна знижка на майбутні покупки</li>
+        </ul>
+        <p>Контакт: feedback@productsurvey.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса feedback@productsurvey.ua видається офіційною",
+            "Посилання веде на офіційний домен productsurvey.ua",
+            "Реалістичні бонуси за участь в анкеті",
+            "Короткий час заповнення (5 хвилин)",
+            "Професійний формат",
+            "Не запитує персональні фінансові дані",
+        ],
+        explanation:
+            "Це легітимне запрошення заповнити анкету про новий продукт. Адреса та посилання є офіційними. Компанії регулярно запитують зворотний зв'язок від користувачів через анкети.",
+        difficulty: "easy",
+        category: "survey",
+    },
+    {
+        id: "61",
+        subject: "Займ готівкою - до 50,000₴ за 24 години",
+        from: "loans@quick-cash-online.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(to right, #ff6b6b, #ffdd00);">
+        <h2 style="text-align: center;">💰 ГРОШОВІ ЗАЙМИ - НЕГАЙНО! 💰</h2>
+        <p style="text-align: center; font-size: 20px;"><strong>До 50,000₴ за 24 години</strong></p>
+        <p><strong>Без документів!<br/>Без колатералу!<br/>100% Онлайн!</strong></p>
+        <ul>
+          <li>✓ Швидкий кредит</li>
+          <li>✓ Мінімальні процентні ставки</li>
+          <li>✓ Легкий процес затвердження</li>
+          <li>✓ Виплата за 24 години</li>
+        </ul>
+        <p style="text-align: center;">Середня процентна ставка: 2% на місяць</p>
+        <p style="text-align: center;">
+          <a href="https://quick-cash-online.biz/apply-now" style="display: inline-block; padding: 15px 30px; background: #ff6b6b; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold;">ПОДАТИ ЗАЯВКУ</a>
+        </p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен quick-cash-online.biz - явно шахрайський",
+            "Нереалістичні умови (без документів, за 24 години)",
+            "Посилання веде на фальшивий сайт",
+            "Форма заявки запитує персональні дані",
+            "Типова схема фінансового лохотрону",
+        ],
+        explanation:
+            "Це фішинг через приманку швидкого кредиту. Форма заявки збирає персональні дані для використання при кредитній аферах. Навіть якщо крем оберуть, можуть стягнути комісії, які перевищать суму кредиту.",
+        difficulty: "medium",
+        category: "finance",
+    },
+    {
+        id: "62",
+        subject: "Система безпеки: Потрібна перевірка на вірус",
+        from: "security@windows-defender-check.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3cd;">
+        <h3>⚠️ Windows Defender - Сканування безпеки</h3>
+        <p>Ваша система безпеки виявила потенційну загрозу.</p>
+        <p>Деталі запита:</p>
+        <ul>
+          <li>Тип загрози: Trojan.Win32.Downloader</li>
+          <li>Файл: C:\Windows\System32\spoolsv.exe</li>
+          <li>Дія: Мотор запущено</li>
+          <li>Статус: ❌ ЗАГРОЗА!</li>
+        </ul>
+        <p>Для видалення загрози:</p>
+        <a href="https://windows-defender-threat-scan.net/scan-now" style="display: inline-block; padding: 12px 25px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px;">Запустити сканування</a>
+        <p style="margin-top: 20px;">Це може займати декілька хвилин. Не вимикайте комп'ютер під час сканування.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса security@windows-defender-check.net не є офіційною",
+            "Посилання веде на фальшивий домен windows-defender-threat-scan.net",
+            "Windows використовує домен microsoft.com, а не .net",
+            "Вигадана назва вірусу та файлу",
+            "Типова схема tech support scam",
+        ],
+        explanation:
+            "Це фішинг, видаючись як сповіщення Windows Defender про вірус. Посилання веде на фальшивий сайт для завантаження малвера. Windows Defender не відправляє такі повідомлення через емейл.",
+        difficulty: "medium",
+        category: "malware",
+    },
+    {
+        id: "63",
+        subject: "Приватні фото - Результати пошуку",
+        from: "search@privacy-photo-finder.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffebee;">
+        <h3>⚠️ КОНФІДЕНЦІЙНЕ ПОВІДОМЛЕННЯ</h3>
+        <p>Ми знайшли ваші приватні фото в інтернеті!</p>
+        <p>Детали:</p>
+        <ul>
+          <li>Знайдено: 7 приватних фото</li>
+          <li>На сайтах: порнографічних реклам</li>
+          <li>Дата знаходження: 7 листопада 2025</li>
+          <li>Доступ: 1,247 людей</li>
+        </ul>
+        <p><strong>НЕГАЙНО видалити з мережі:</strong></p>
+        <a href="https://privacy-photo-finder.biz/remove-photos" style="display: inline-block; padding: 12px 25px; background: #d32f2f; color: white; text-decoration: none; border-radius: 5px;">Видалити фото</a>
+        <p style="margin-top: 20px;"><strong>⚠️ Вартість видалення: €50</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен privacy-photo-finder.biz - явно шахрайський",
+            "Шахрайство на базі залякування та сорому",
+            "Запит на платіж для 'видалення' фото",
+            "Посилання веде на сайт для крадіжки даних карти",
+            "Типова схема extortion scam",
+        ],
+        explanation:
+            "Це фішинг-шахрайство на базі залякування та сорому. Немає ніяких приватних фото. Цель - залякати користувача для сплати. Ці фото не існують, і гроші ніколи не будуть повернені.",
+        difficulty: "easy",
+        category: "extortion",
+    },
+    {
+        id: "64",
+        subject: "Запрошення на корпоративний брифінг",
+        from: "hr@corporateinc.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>📢 Корпоративний брифінг - Важливе оголошення</h3>
+        <p>Привіт,</p>
+        <p>Керівництво компанії запрошує вас на брифінг щодо важливих змін та нових можливостей розвитку.</p>
+        <p><strong>Дата:</strong> 12 листопада 2025</p>
+        <p><strong>Час:</strong> 15:00 - 16:00</p>
+        <p><strong>Формат:</strong> Zoom (посилання буде надіслано за 1 день)</p>
+        <p><strong>Порядок денний:</strong></p>
+        <ul>
+          <li>Оновлення стратегії розвитку</li>
+          <li>Нові можливості кар'єрного зростання</li>
+          <li>Питання та відповіді</li>
+        </ul>
+        <p>Будь ласка, підтвердіть вашу участь:</p>
+        <a href="https://corporateinc.ua/confirm-attendance">Підтвердити присутність</a>
+        <p>З повагою,<br/>Відділ HR</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса hr@corporateinc.ua видається офіційною",
+            "Посилання веде на офіційний домен corporateinc.ua",
+            "Реалістичні деталі про брифінг",
+            "Посилання Zoom буде надіслано пізніше, не одразу",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне запрошення на корпоративний брифінг. Адреса та посилання є офіційними. Компанії регулярно проводять такі брифінги для оновлення співробітників.",
+        difficulty: "easy",
+        category: "company",
+    },
+    {
+        id: "65",
+        subject: "Спеціальна скидка на страхування автомобіля",
+        from: "offers@auto-insurance-deals.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff8e1;">
+        <h2>🚗 НАЙМЕНША ЦІНА НА СТРАХУВАННЯ - ГАРАНТОВАНО!</h2>
+        <p>Ми пропонуємо найкращі ставки на страхування автомобіля у країні.</p>
+        <p><strong>Виключна пропозиця для вас:</strong></p>
+        <ul>
+          <li>Скидка 60% на перший рік</li>
+          <li>Без очік</li>
+          <li>Покриття аварій без ліміту</li>
+          <li>Допомога на дорозі 24/7</li>
+        </ul>
+        <p>Зберегти до 50,000₴ в рік!</p>
+        <a href="https://auto-insurance-deals.biz/quote" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Отримати котирування</a>
+        <p style="margin-top: 20px;">⏰ Пропозиція дійсна тільки 7 днів!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен auto-insurance-deals.biz - явно шахрайський",
+            "Нереалістична скидка (60%)",
+            "Посилання веде на фальшивий сайт котирування",
+            "Форма котирування запитує персональні дані",
+            "Типова схема фішингу для крадіжки даних",
+        ],
+        explanation:
+            "Це фішинг через приманку спеціальної страхової пропозиції. Форма котирування збирає персональні дані для ідентифікаційної крадіжки. Реальні страхові компанії не розсилають такі листи від невідомих доменів.",
+        difficulty: "medium",
+        category: "insurance",
+    },
+    {
+        id: "66",
+        subject: "Ваш рахунок Telegram потребує верифікації",
+        from: "verify@telegram-account.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e1f5fe;">
+        <h3>🔐 Верифікація рахунку Telegram</h3>
+        <p>Ми виявили підозрілу активність на вашому рахунку Telegram.</p>
+        <p>Детали:</p>
+        <ul>
+          <li>Пристрій: Android (новий)</li>
+          <li>Місце: Москва, РФ</li>
+          <li>IP-адреса: 195.154.22.33</li>
+        </ul>
+        <p>Для захисту рахунку верифікуйте його:</p>
+        <a href="https://telegram-verify-secure.net/auth" style="display: inline-block; padding: 12px 25px; background: #0088cc; color: white; text-decoration: none; border-radius: 5px;">Верифікувати рахунок</a>
+        <p style="margin-top: 20px;">Якщо це були не ви, змініть пароль одразу ж.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Адреса verify@telegram-account.net не є офіційною",
+            "Посилання веде на фальшивий домен telegram-verify-secure.net",
+            "Telegram використовує домен telegram.org, а не .net",
+            "Telegram не верифікує рахунки через емейл",
+            "Вимога верифікації - техніка маніпуляції",
+        ],
+        explanation:
+            "Це фішинг, видаючись як верифікація рахунку Telegram. Посилання веде на фальшивий сайт для крадіжки облікових даних. Telegram верифікує рахунки через SMS код, а не через емейл-посилання.",
+        difficulty: "hard",
+        category: "messaging",
+    },
+    {
+        id: "67",
+        subject: "Стипендія для студентів - Подайте заявку",
+        from: "scholarships@education-fund.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h2>🎓 Стипендії для студентів - 2025-2026</h2>
+        <p>Освітній фонд пропонує стипендії для здібних студентів.</p>
+        <p><strong>Розміри стипендій:</strong></p>
+        <ul>
+          <li>💰 €3,000 - €5,000 на рік</li>
+          <li>📚 Для студентів бакалаврату</li>
+          <li>👨‍🎓 Для аспірантів - до €8,000</li>
+        </ul>
+        <p><strong>Вимоги:</strong></p>
+        <ul>
+          <li>✓ Середній бал 4.0+</li>
+          <li>✓ Есе про мотивацію</li>
+          <li>✓ Рекомендаційні листи</li>
+        </ul>
+        <p>Подати заявку:</p>
+        <a href="https://education-fund.org/apply-scholarship">Подати заявку</a>
+        <p>Крайній термін: 15 грудня 2025</p>
+        <p>Контакт: scholarships@education-fund.org</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса scholarships@education-fund.org видається офіційною",
+            "Посилання веде на офіційний домен education-fund.org",
+            "Реалістичні розміри стипендій та вимоги",
+            "Конкретна дата крайнього терміну",
+            "Професійний формат",
+            "Не запитує персональні фінансові дані авансово",
+        ],
+        explanation:
+            "Це легітимне запрошення подати заявку на стипендію. Адреса та посилання є офіційними. Освітні фонди регулярно пропонують стипендії для здібних студентів.",
+        difficulty: "easy",
+        category: "education",
+    },
+    {
+        id: "68",
+        subject: "Отримайте мастер-клас від експерта - БЕЗКОШТОВНО",
+        from: "masterclass@expert-academy.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <h2 style="text-align: center;">🎓 МАСТЕР-КЛАС: ВИВЧІТЬ ПРОФЕСІЙНІ НАВИЧКИ 🎓</h2>
+        <p style="text-align: center;"><strong>100% БЕЗКОШТОВНО</strong></p>
+        <p><strong>Теми мастер-класу:</strong></p>
+        <ul>
+          <li>Digital Marketing для малих бізнесів</li>
+          <li>Спікер: Марк Джонсон - експерт з 20-річним досвідом</li>
+          <li>Тривалість: 90 хвилин</li>
+          <li>Формат: Zoom</li>
+        </ul>
+        <p>Реєстрація на мастер-клас:</p>
+        <a href="https://expert-academy.biz/masterclass-register" style="display: inline-block; padding: 12px 25px; background: white; color: #f5576c; text-decoration: none; border-radius: 5px; font-weight: bold;">ЗАРЕЄСТРУВАТИСЯ</a>
+        <p style="margin-top: 20px;">⏰ Мастер-клас відбудеться 15 листопада о 18:00</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен expert-academy.biz - видається офіційно, але може бути спуфований",
+            "Безкоштовний мастер-клас як приманка для збору емейлів",
+            "Форма реєстрації запитує емейл і персональні дані",
+            "Після реєстрації користувач отримує спам і комерційні пропозиції",
+            "Типова схема для маркетингу через спам",
+        ],
+        explanation:
+            "Це фішинг через приманку безкоштовного мастер-класу. Форма реєстрації збирає емейл для розсилки спаму та комерційних пропозицій. Мастер-клас може не відбутися, або буде використаний для залучення на платні курси.",
+        difficulty: "medium",
+        category: "education",
+    },
+    {
+        id: "69",
+        subject: "Ваш квиток переведено на новий номер",
+        from: "bookings@airline.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e1f5fe;">
+        <h3>✈️ Оновлення квитка - Важливо!</h3>
+        <p>Ваш авіаквиток було переведено на новий номер.</p>
+        <p><strong>Деталі змін:</strong></p>
+        <ul>
+          <li>Старий номер: SK-2025-1847392</li>
+          <li>Новий номер: SK-2025-1847392-UPD</li>
+          <li>Причина: Переведення на інший рейс</li>
+          <li>Новий час вильоту: 15:30 (замість 10:30)</li>
+        </ul>
+        <p>Завантажити оновлений посадковий талон:</p>
+        <a href="https://airline.ua/boarding-pass?ref=SK1847392UPD">Завантажити посадковий талон</a>
+        <p>Контакт: +38 (044) 555-44-33</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса bookings@airline.ua видається офіційною",
+            "Посилання веде на офіційний домен airline.ua",
+            "Реалістичні деталі про переведення квитка",
+            "Логічне оновлення номерів (з суфіксом)",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення від авіакомпанії про оновлення квитка. Адреса та посилання є офіційними. Авіакомпанії іноді змінюють часи рейсів або номери квитків.",
+        difficulty: "easy",
+        category: "travel",
+    },
+    {
+        id: "70",
+        subject: "Розширенню - Надання дозволу на трансмісію даних",
+        from: "security-notice@facebook.com",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <h3>🔐 Сповіщення про безпеку Facebook</h3>
+        <p>Ми виявили неавторизовану спробу доступу до вашого Facebook рахунку.</p>
+        <p>Деталі спроби:</p>
+        <ul>
+          <li>Дата/Час: 7 листопада, 18:45</li>
+          <li>Місце: Київ, Україна</li>
+          <li>Пристрій: Chrome на Windows</li>
+          <li>IP: 185.220.101.45</li>
+        </ul>
+        <p>Ми заблокували цю спробу. Перевірте безпеку:</p>
+        <a href="https://facebook.com/login?next=/security">Перевірити рахунок</a>
+        <p>Рекомендуємо включити двофакторну аутентифікацію.</p>
+        <p>Facebook Security Team</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса security-notice@facebook.com видається офіційною",
+            "Посилання веде на офіційний домен facebook.com",
+            "Реалістичні деталі про спробу доступу",
+            "Facebook дійсно відправляє такі сповіщення",
+            "Рекомендація про двофакторну аутентифікацію - безпечна практика",
+        ],
+        explanation:
+            "Це легітимне сповіщення безпеки від Facebook. Адреса та посилання є офіційними. Facebook регулярно сповіщає користувачів про підозрілі спроби доступу. Однак завжди перевіряйте домен посилання перед переходом.",
+        difficulty: "hard",
+        category: "social-media",
+    },
+    {
+        id: "71",
+        subject: "Трудовий договір - На підпис",
+        from: "hr@company-modern.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>📋 Трудовий договір - На підпис</h3>
+        <p>Привіт,</p>
+        <p>Рада вам повідомити, що ви обрані на посаду Backend Developer у нашій компанії!</p>
+        <p>Деталі пропозиції:</p>
+        <ul>
+          <li>Посада: Backend Developer (Senior)</li>
+          <li>Зарплата: 60,000₴ на місяць</li>
+          <li>Тип контракту: На невизначений час</li>
+          <li>Початок роботи: 20 листопада 2025</li>
+        </ul>
+        <p>Трудовий договір готовий до підпису. Переглянути та підписати:</p>
+        <a href="https://company-modern.ua/employment/sign-contract">Переглянути договір</a>
+        <p>Будь ласка, підпишіть договір до 10 листопада.</p>
+        <p>З повагою,<br/>Кадровий відділ</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса hr@company-modern.ua видається офіційною",
+            "Посилання веде на офіційний домен company-modern.ua",
+            "Реалістичні умови пропозиції",
+            "Логічні дати и деталі",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення про пропозицію роботи і трудовий договір. Адреса та посилання є офіційними. Компанії надсилають такі листи кандидатам після успішного завершення собеседованиний.",
+        difficulty: "easy",
+        category: "recruitment",
+    },
+    {
+        id: "72",
+        subject: "Цены на білизні упали - Скидка 70%",
+        from: "promo@fashiondeals.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffccbc;">
+        <h2 style="text-align: center;">👗 МОДА - МЕГАСКИДКА 70% 👗</h2>
+        <p style="text-align: center;"><strong>Тільки сьогодні!</strong></p>
+        <p>Найменші в історії ціни на популярні марки:</p>
+        <ul>
+          <li>H&M - від 99₴</li>
+          <li>Zara - від 149₴</li>
+          <li>Adidas - від 199₴</li>
+          <li>Nike - від 249₴</li>
+        </ul>
+        <p>Закупитися білизною:</p>
+        <a href="https://fashiondeals.net/shop-now" style="display: inline-block; padding: 12px 25px; background: #ff6b9d; color: white; text-decoration: none; border-radius: 5px;">Купити зараз</a>
+        <p>⏰ Пропозиця дійсна тільки до кінця дня!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен fashiondeals.net - видається офіційно, але може бути спуфований",
+            "Нереалістичні ціни (70% знижка на новинки)",
+            "Посилання на магазин от невідомого домену",
+            "Сайт може не продавати реальні товари",
+            "Типова схема лохотрону через приманку ціни",
+        ],
+        explanation:
+            "Це фішинг через приманку нереалістичних цін. Магазин може вимагати передплату за товари, що не будуть доставлені. Або сайт просто збирає дані карти для їх незаконного використання.",
+        difficulty: "medium",
+        category: "ecommerce",
+    },
+    {
+        id: "73",
+        subject: "Оновлення про ремонт вашої квартири",
+        from: "management@building-maintenance.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff9c4;">
+        <h3>🏠 Оповідомлення про ремонт будинку</h3>
+        <p>Привіт,</p>
+        <p>Управління будинку повідомляє про проведення планового ремонту.</p>
+        <p><strong>Деталі ремонту:</strong></p>
+        <ul>
+          <li>Об'єкт: Вул. Гоголя, 25 (ваш будинок)</li>
+          <li>Дата: 12-15 листопада 2025</li>
+          <li>Вид ремонту: Фасадні роботи та кровля</li>
+          <li>Можлива відсутність електроенергії: 2-3 години на день</li>
+        </ul>
+        <p>Більш детальні інструкції:</p>
+        <a href="https://building-maintenance.ua/repair-notice">Переглянути детальні інструкції</a>
+        <p>Якщо у вас є запитання, звертайтеся:</p>
+        <p>📞 +38 (044) 123-45-67</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса management@building-maintenance.ua видається офіційною",
+            "Посилання веде на офіційний домен building-maintenance.ua",
+            "Реалістичні деталі про ремонт та адресу",
+            "Логічні дати проведення ремонту",
+            "Повна контактна інформація",
+        ],
+        explanation:
+            "Це легітимне повідомлення від управління будинку про плановий ремонт. Адреса та посилання є офіційними. Управління регулярно оповіщають мешканців про масові ремонти.",
+        difficulty: "easy",
+        category: "property",
+    },
+    {
+        id: "74",
+        subject: "Доказ на миска - Срочно!",
+        from: "legal@lawsuit-winning.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fce4ec;">
+        <h3>⚖️ ПОЗОВ ПРОТИ ВАС - СРОЧНО!</h3>
+        <p>Проти вас було подано позов до суду!</p>
+        <p>Детали:</p>
+        <ul>
+          <li>Позивач: XYZ Corporation</li>
+          <li>Сума позову: €50,000</li>
+          <li>Причина: Порушення контракту</li>
+          <li>Судовий номер: #2025-123456</li>
+        </ul>
+        <p><strong>ВАЖЛИВО:</strong> Відповідь потрібна до 14 листопада 2025</p>
+        <p>Переглянути докази:</p>
+        <a href="https://lawsuit-winning.biz/case-documents" style="display: inline-block; padding: 12px 25px; background: #d32f2f; color: white; text-decoration: none; border-radius: 5px;">Переглянути докази</a>
+        <p style="margin-top: 20px;">Якщо ви не відповідите, рішення буде винесено проти вас.</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен lawsuit-winning.biz - явно шахрайський",
+            "Посилання веде на фальшивий сайт документів",
+            "Суди не відправляють позови через емейл",
+            "Шахрайство на базі залякування для крадіжки даних",
+            "Типова схема судового лохотрону",
+        ],
+        explanation:
+            "Це фішинг через залякування судовим позовом. Суди офіціально відправляють судові документи поштою, а не емейлом. Посилання веде на фальшивий сайт для крадіжки персональних даних. Ніякого позову немає.",
+        difficulty: "easy",
+        category: "legal-scam",
+    },
+    {
+        id: "75",
+        subject: "Музичний фестиваль - Квитки на продаж",
+        from: "tickets@music-fest-2025.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="text-align: center;">🎵 MUSIC FEST 2025 🎵</h2>
+        <p style="text-align: center;"><strong>Легендарний музичний фестиваль</strong></p>
+        <p><strong>Дата:</strong> 5-7 липня 2025<br/><strong>Місце:</strong> Гідропарк, Київ</p>
+        <p><strong>Артисти (попередній список):</strong></p>
+        <ul>
+          <li>The Weeknd</li>
+          <li>Billie Eilish</li>
+          <li>Тіна Кароль</li>
+          <li>Мотор-ролл та інші</li>
+        </ul>
+        <p><strong>Ціни на квитки:</strong></p>
+        <ul>
+          <li>3 дні: 3,500₴</li>
+          <li>День: 1,500₴</li>
+          <li>VIP 3 дні: 7,500₴</li>
+        </ul>
+        <p>Купити квитки:</p>
+        <a href="https://music-fest-2025.ua/buy-tickets">Купити квитки</a>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса tickets@music-fest-2025.ua видається офіційною",
+            "Посилання веде на офіційний домен music-fest-2025.ua",
+            "Реалістичні дати, місце та артисти",
+            "Розумні ціни на квитки",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення про продаж квитків на музичний фестиваль. Адреса та посилання є офіційними. Музичні фестивалі регулярно продають квитки через свої сайти.",
+        difficulty: "easy",
+        category: "events",
+    },
+    {
+        id: "76",
+        subject: "Хакування експерт - Захистіть ваш ПК",
+        from: "security@cyber-protect.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #ffebee;">
+        <h3>🛡️ ВАШ ПК ПІД АТАКОЮ!</h3>
+        <p>Ми виявили спробу хакування вашого комп'ютера!</p>
+        <p>Статус:</p>
+        <ul>
+          <li>❌ Брандмауер вимкнено</li>
+          <li>❌ Антивірус не активний</li>
+          <li>❌ 3 активні шпигунські програми</li>
+          <li>❌ 847 невирішених вірусів</li>
+        </ul>
+        <p>НЕГАЙНО встановити захист:</p>
+        <a href="https://cyber-protect.biz/install-protection" style="display: inline-block; padding: 15px 30px; background: #d32f2f; color: white; text-decoration: none; border-radius: 5px; font-size: 18px;">ВСТАНОВИТИ ЗАХИСТ</a>
+        <p>⏰ Залишилось часу: 1 ГОДИНА</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен cyber-protect.biz - явно шахрайський",
+            "Вигадані параметри атаки для залякування",
+            "Посилання на встановлення програми з невідомого джерела",
+            "Завантажена програма сама є малвером",
+            "Типова схема scareware",
+        ],
+        explanation:
+            "Це scareware - шахрайське ПО. Вигадані параметри залякують користувача. Завантажена програма сама є малвером або показує рекламу.",
+        difficulty: "easy",
+        category: "malware",
+    },
+    {
+        id: "77",
+        subject: "Приєднайтеся до програми партнерів",
+        from: "partners@ecommerce-platform.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h2>💼 Програма партнерів - Відмінна можливість!</h2>
+        <p>Приєднайтеся до нашої програми партнерів та заробляйте комісії!</p>
+        <p><strong>Що ви отримаєте:</strong></p>
+        <ul>
+          <li>✓ Комісія: 10-20% від кожного продажу</li>
+          <li>✓ Безкоштовний маркетинговий матеріал</li>
+          <li>✓ Дедиковано召された тільки для партнерів</li>
+          <li>✓ Щомісячні виплати</li>
+        </ul>
+        <p><strong>Як почати:</strong></p>
+        <ol>
+          <li>Заповніть анкету</li>
+          <li>Отримайте власний реферальний код</li>
+          <li>Почніть заробляти відразу</li>
+        </ol>
+        <p>Приєднатися до програми:</p>
+        <a href="https://ecommerce-platform.ua/partner-program">Подати заявку</a>
+        <p>Контакт: partners@ecommerce-platform.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса partners@ecommerce-platform.ua видається офіційною",
+            "Посилання веде на офіційний домен ecommerce-platform.ua",
+            "Реалістичні терміни комісій та умови",
+            "Логічна послідовність кроків запуску",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне запрошення приєднатися до програми партнерів. Адреса та посилання є офіційними. Компанії регулярно залучають партнерів для реалізації своїх продуктів.",
+        difficulty: "easy",
+        category: "partnership",
+    },
+    {
+        id: "78",
+        subject: "Повітряне дупло в зубі - Запис до стоматолога",
+        from: "appointments@dental-care.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3e0;">
+        <h3>🦷 Запис до стоматолога</h3>
+        <p>Привіт,</p>
+        <p>У системі нашої клініки ви маєте невиконаний запис на прийом.</p>
+        <p><strong>Деталі запису:</strong></p>
+        <ul>
+          <li>Дата запису: Було на 31 жовтня (пропущено)</li>
+          <li>Час: 14:30</li>
+          <li>Процедура: Лікування каріесу</li>
+          <li>Стоматолог: Д-р Гаврилів</li>
+        </ul>
+        <p>Записатися на новий час:</p>
+        <a href="https://dental-care.ua/appointments">Записатися</a>
+        <p>Звертайтеся:</p>
+        <p>📞 +38 (044) 666-77-88<br/>Пн-Пт: 09:00 - 18:00</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса appointments@dental-care.ua видається офіційною",
+            "Посилання веде на офіційний домен dental-care.ua",
+            "Реалістичні деталі про запис",
+            "Звичайне нагадування про пропущену консультацію",
+            "Повна контактна інформація",
+        ],
+        explanation:
+            "Це легітимне повідомлення від стоматологічної клініки про пропущену консультацію. Адреса та посилання є офіційними. Клініки регулярно нагадують пацієнтам про записи.",
+        difficulty: "easy",
+        category: "healthcare",
+    },
+    {
+        id: "79",
+        subject: "Поздравляемо! Вы в списке счастливых победителей",
+        from: "winner@ultimate-lottery-worldwide.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #ff0000, #ffff00);">
+        <h1 style="text-align: center; color: #ff0000;">🎰 ВІТАЄМО! ВИ ВИГРАЛИ! 🎰</h1>
+        <p style="text-align: center; font-size: 28px; color: #ff0000;"><strong>€2,000,000 EUR</strong></p>
+        <p style="text-align: center;">Ваш номер було обрано в міжнародній лотереї!</p>
+        <p style="text-align: center;"><strong>Гарантований виграш!</strong></p>
+        <p>Для отримання вашого виграшу подайте заявку:</p>
+        <a href="https://ultimate-lottery-worldwide.biz/claim-prize" style="display: inline-block; padding: 15px 30px; background: #ff0000; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold;">ОТРИМАТИ ВИГРАШ</a>
+        <p style="margin-top: 30px;"><strong>⚠️ ВАЖЛИВО: Внесіть поточну комісію €50 для обробки документів</strong></p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Нереалістичний виграш без участі в лотереї",
+            "Домен ultimate-lottery-worldwide.biz - явно шахрайський",
+            "Запит на передплату для комісії",
+            "Типова схема лотерейного лохотрону",
+            "Гарантований виграш - неможливо в реальних лотереях",
+        ],
+        explanation:
+            "Це класична схема лотерейного шахрайства. Ви не можете виграти в лотереї, у якій не брали участь. Запит на передплату - це мета. Гроші будуть украдені, і виграшу не буде.",
+        difficulty: "easy",
+        category: "lottery",
+    },
+    {
+        id: "80",
+        subject: "Виписка з банку за жовтень - Переглянути",
+        from: "banking@bank.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <h3>📊 Виписка за жовтень 2025</h3>
+        <p>Виписка з вашого рахунку готова.</p>
+        <p><strong>Період:</strong> 1-31 жовтня 2025</p>
+        <p><strong>Рахунок:</strong> UA12 XXXX XXXX XXXX XXXX XXXX XXXX</p>
+        <p><strong>Баланс на кінець місяця:</strong> 45,230.50₴</p>
+        <p><strong>Операції за місяць:</strong> 15</p>
+        <p>Переглянути повну виписку в особистому кабінеті:</p>
+        <a href="https://bank.ua/statements">Переглянути</a>
+        <p>Якщо у вас виникнуть запитання, звертайтесь:</p>
+        <p>📞 +38 (044) 777-88-99</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса banking@bank.ua видається офіційною",
+            "Посилання веде на офіційний домен bank.ua",
+            "Реалістичні деталі про виписку",
+            "Приховані останні цифри рахунку для безпеки",
+            "Повна контактна інформація банку",
+        ],
+        explanation:
+            "Це легітимна виписка з банківського рахунку. Адреса та посилання є офіційними. Банки регулярно надсилають виписки своїм клієнтам.",
+        difficulty: "easy",
+        category: "banking",
+    },
+    {
+        id: "81",
+        subject: "Лист про штрафи за паркування",
+        from: "fines@traffic-enforcement.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3e0;">
+        <h3>🚗 Штраф за паркування</h3>
+        <p>У вас виявлено порушення правил паркування.</p>
+        <p><strong>Детали штрафу:</strong></p>
+        <ul>
+          <li>Дата порушення: 5 листопада 2025 о 11:45</li>
+          <li>Місце: Вул. Хрещатик, місце паркування 47</li>
+          <li>Вид порушення: Неправильне припинення на тротуарі</li>
+          <li>Сума штрафу: 850₴</li>
+        </ul>
+        <p>Оплатити штраф:</p>
+        <a href="https://traffic-enforcement.ua/pay-fine">Оплатити онлайн</a>
+        <p>Крайній термін оплати: 20 листопада 2025</p>
+        <p>Номер справи: #2025-987654</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса fines@traffic-enforcement.ua видається офіційною",
+            "Посилання веде на офіційний домен traffic-enforcement.ua",
+            "Реалістичні деталі про порушення",
+            "Розумна сума штрафу",
+            "Чітка дата крайнього терміну",
+        ],
+        explanation:
+            "Це легітимне повідомлення про штраф за паркування від управління дорожного руху. Адреса та посилання є офіційними. Такі штрафи відправляються власникам автомобілів за порушення.",
+        difficulty: "easy",
+        category: "traffic",
+    },
+    {
+        id: "82",
+        subject: "Трансфер в обмінному пункті - Неможливо завершити",
+        from: "support@exchangepoint-fast.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff9c4;">
+        <h3>⚠️ Проблема з трансфером</h3>
+        <p>Ваш трансфер грошей не міг бути завершено.</p>
+        <p><strong>Деталі трансфера:</strong></p>
+        <ul>
+          <li>ID трансфера: EXP-2025-234567</li>
+          <li>Сума: €500</li>
+          <li>Отримувач: Петро Іванов</li>
+          <li>Статус: ❌ Помилка обробки</li>
+        </ul>
+        <p>Причина помилки: Невідповідна верифікація отримувача</p>
+        <p>Для завершення трансфера верифікуйте отримувача:</p>
+        <a href="https://exchangepoint-fast.net/verify-recipient" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Верифікувати отримувача</a>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен exchangepoint-fast.net - видається офіційно, але може бути спуфований",
+            "Посилання на верифікацію отримувача від невідомого домену",
+            "Форма верифікації запитує персональні дані",
+            "Типова схема фішингу для крадіжки даних платежу",
+            "Реальні обмінні пункти не запитують верифікацію через емейл",
+        ],
+        explanation:
+            "Це фішинг, видаючись як проблема з трансфером. Посилання веде на фальшивий сайт для крадіжки персональних даних. Форма верифікації може запитувати номер карти або доступ до рахунку.",
+        difficulty: "hard",
+        category: "payment",
+    },
+    {
+        id: "83",
+        subject: "Відкриття новой галереї сучасного мистецтва",
+        from: "events@artgallery-modern.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2>🎨 Відкриття нової галереї</h2>
+        <p>Запрошуємо вас на відкриття нової галереї сучасного мистецтва!</p>
+        <p><strong>Дата:</strong> 20 листопада 2025 о 18:00</p>
+        <p><strong>Місце:</strong> Вул. Крещатик, 10 (в центрі міста)</p>
+        <p><strong>Програма:</strong></p>
+        <ul>
+          <li>Екскурсія галереєю</li>
+          <li>Виступи музикантів</li>
+          <li>Коктейльний час</li>
+          <li>Мережевий час з художниками</li>
+        </ul>
+        <p>Залік вільні місця!</p>
+        <p>Зареєструватися:</p>
+        <a href="https://artgallery-modern.ua/register-opening">Зареєструватися</a>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса events@artgallery-modern.ua видається офіційною",
+            "Посилання веде на офіційний домен artgallery-modern.ua",
+            "Реалістичні деталі про відкриття",
+            "Логічна програма заходу",
+            "Професійний формат запрошення",
+        ],
+        explanation:
+            "Це легітимне запрошення на відкриття нової галереї. Адреса та посилання є офіційними. Галереї та культурні установи регулярно запрошують людей на відкриття нових експозицій.",
+        difficulty: "easy",
+        category: "events",
+    },
+    {
+        id: "84",
+        subject: "Переведення залишків - Знижте комісії",
+        from: "service@moneyexchange-deal.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e0f2f1;">
+        <h2>💱 Лучшие ставки на обмін валют!</h2>
+        <p>Ми пропонуємо найкращі ставки на обмін валют у країні!</p>
+        <p><strong>Ставки:</strong></p>
+        <ul>
+          <li>EUR/USD: 1.10 (комісія 0%)</li>
+          <li>USD/UAH: 41.50 (комісія 0%)</li>
+          <li>GBP/USD: 1.27 (комісія 0.5%)</li>
+        </ul>
+        <p><strong>Переведіть гроші без комісії!</strong></p>
+        <a href="https://moneyexchange-deal.biz/exchange-now" style="display: inline-block; padding: 12px 25px; background: #009688; color: white; text-decoration: none; border-radius: 5px;">Обміняти валюти</a>
+        <p>⏰ Пропозиця дійсна тільки 48 годин!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен moneyexchange-deal.biz - явно шахрайський",
+            "Нереалістичні ставки обміну (0% комісія)",
+            "Посилання на обмін валют від невідомого домену",
+            "Форма обміну може запитувати дані карти",
+            "Типова схема для крадіжки фінансових даних",
+        ],
+        explanation:
+            "Це фішинг через приманку дешевого обміну валют. Посилання веде на фальшивий сайт. Форма обміну запитує дані карти, але валюти не будуть обміняні.",
+        difficulty: "medium",
+        category: "finance",
+    },
+    {
+        id: "85",
+        subject: "Звіт про стан охорони здоров'я - Результати обстеження",
+        from: "health@medical-center.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h3>📋 Результати медичного обстеження</h3>
+        <p>Привіт,</p>
+        <p>Результати вашого щорічного медичного обстеження готові.</p>
+        <p><strong>Дата обстеження:</strong> 3 листопада 2025</p>
+        <p><strong>Загальний стан:</strong> ✓ Добрий</p>
+        <p><strong>Результати:</strong></p>
+        <ul>
+          <li>✓ Кровяний тиск: нормальний</li>
+          <li>✓ Рівень цукру: в нормі</li>
+          <li>✓ Холестерин: в нормі</li>
+          <li>ℹ️ Дефіцит вітаміну D - рекомендується добавка</li>
+        </ul>
+        <p>Переглянути детальний звіт:</p>
+        <a href="https://medical-center.ua/health-results">Переглянути звіт</a>
+        <p>Консультація з лікарем: +38 (044) 999-00-11</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса health@medical-center.ua видається офіційною",
+            "Посилання веде на офіційний домен medical-center.ua",
+            "Реалістичні результати обстеження",
+            "Логічні рекомендації (дефіцит вітаміну D)",
+            "Повна контактна інформація клініки",
+        ],
+        explanation:
+            "Це легітимне повідомлення від медичного центру про результати обстеження. Адреса та посилання є офіційними. Медичні установи регулярно надсилають результати обстежень своїм пацієнтам.",
+        difficulty: "easy",
+        category: "healthcare",
+    },
+    {
+        id: "86",
+        subject: "Страховий полис - Оновлення термінів",
+        from: "insurance@insurance-provider.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h3>📋 Страховий полис - Оновлення інформації</h3>
+        <p>Ваш страховий полис скоро закінчується.</p>
+        <p><strong>Деталі поліса:</strong></p>
+        <ul>
+          <li>Номер поліса: #INS-2025-567890</li>
+          <li>Тип страхування: КАСКО (автомобіль)</li>
+          <li>Дата закінчення: 30 листопада 2025</li>
+          <li>Річна премія: 3,500₴</li>
+        </ul>
+        <p>Для поновлення поліса:</p>
+        <a href="https://insurance-provider.ua/renew-policy">Поновити полис</a>
+        <p>Якщо ви хочете скасувати полис:</p>
+        <p>📞 +38 (044) 888-99-99</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса insurance@insurance-provider.ua видається офіційною",
+            "Посилання веде на офіційний домен insurance-provider.ua",
+            "Реалістичні деталі про полис",
+            "Правильна дата закінчення поліса",
+            "Повна контактна інформація",
+        ],
+        explanation:
+            "Це легітимне повідомлення про страховий полис і нагадування про його закінчення. Адреса та посилання є офіційними. Страхові компанії регулярно напоминают клієнтам про поновлення полісів.",
+        difficulty: "easy",
+        category: "insurance",
+    },
+    {
+        id: "87",
+        subject: "Встановіть приватний VPN - Спеціальна ціна 90% знижка",
+        from: "offers@vpn-elite.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(to bottom, #ff0000, #000000);">
+        <h2 style="text-align: center; color: #ffffff;">🔒 ПРИВАТНИЙ VPN - 90% ЗНИЖКА 🔒</h2>
+        <p style="text-align: center;"><strong>ТІЛЬКИ СЬОГОДНІ!</strong></p>
+        <p style="text-align: center; font-size: 20px; color: #ffff00;">€99.99/рік → €9.99/рік</p>
+        <p>Встановіть надійний VPN для повної приватності:</p>
+        <ul>
+          <li>✓ 256-bit AES шифрування</li>
+          <li>✓ 1000+ серверів</li>
+          <li>✓ Без логування</li>
+          <li>✓ Смартфон + ПК + планшет</li>
+        </ul>
+        <a href="https://vpn-elite.biz/buy-now" style="display: inline-block; padding: 15px 30px; background: #ffff00; color: #000000; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold;">КУПИТИ ЗАРАЗ</a>
+        <p style="margin-top: 20px;">⏰ Залишилось місць: ТІЛЬКИ 50!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен vpn-elite.biz - явно шахрайський",
+            "Нереалістична скидка (90% на річну підписку)",
+            "Посилання на покупку від невідомого домену",
+            "Сайт покупки може запитувати дані карти",
+            "Типова схема для крадіжки даних платіжних карт",
+        ],
+        explanation:
+            "Це фішинг через приманку нереалістичної скидки на VPN. Посилання веде на фальшивий сайт покупки. Форма покупки запитує дані карти, але послуга не буде надана.",
+        difficulty: "medium",
+        category: "subscription",
+    },
+    {
+        id: "88",
+        subject: "Надійте заявку на вчиння за кордоном",
+        from: "admissions@university-abroad.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e3f2fd;">
+        <h2>🎓 Вчіння за кордоном - Стипендіальна програма</h2>
+        <p>Ми запрошуємо студентів подати заявку на вчіння в європейських університетах.</p>
+        <p><strong>Переваги:</strong></p>
+        <ul>
+          <li>✓ Європейська освіта</li>
+          <li>✓ Стипендії до 100% вартості</li>
+          <li>✓ Житло включено</li>
+          <li>✓ Помощь з імміграцією</li>
+        </ul>
+        <p><strong>Партнерські університети:</strong></p>
+        <ul>
+          <li>University of Amsterdam</li>
+          <li>Technical University of Berlin</li>
+          <li>Sorbonne University Paris</li>
+        </ul>
+        <p>Подати заявку:</p>
+        <a href="https://university-abroad.org/apply">Подати заявку</a>
+        <p>Крайній термін: 30 грудня 2025</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса admissions@university-abroad.org видається офіційною",
+            "Посилання веде на офіційний домен university-abroad.org",
+            "Реалістичні партнерські університети",
+            "Розумні терміни стипендій",
+            "Професійний формат",
+            "Чіткий крайній термін для заявок",
+        ],
+        explanation:
+            "Це легітимне запрошення подати заявку на вчіння за кордоном. Адреса та посилання є офіційними. Такі організації допомагають студентам знайти освітні програми за кордоном.",
+        difficulty: "easy",
+        category: "education",
+    },
+    {
+        id: "89",
+        subject: "Запит на авансовий платіж - Посадкові документи готові",
+        from: "booking@relocation-services.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff3e0;">
+        <h3>🚚 Послуга переїзду - Авансовий платіж</h3>
+        <p>Ви замовили послугу переїзду. Для підтвердження замовлення потрібен авансовий платіж.</p>
+        <p><strong>Деталі замовлення:</strong></p>
+        <ul>
+          <li>Тип: Міжнародний переїзд (Україна → Германія)</li>
+          <li>Дата переїзду: 15 грудня 2025</li>
+          <li>Кількість м³: 45</li>
+          <li>Повна вартість: €2,500</li>
+          <li>Авансовий платіж (20%): €500</li>
+        </ul>
+        <p>Оплатити авансовий платіж:</p>
+        <a href="https://relocation-services.biz/pay-deposit" style="display: inline-block; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px;">Оплатити €500</a>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен relocation-services.biz - явно шахрайський",
+            "Запит на авансовий платіж від невідомої компанії",
+            "Посилання на платіж від невідомого домену",
+            "Типова схема для крадіжки грошей через аванс",
+            "Користувач може і не замовляти цю послугу",
+        ],
+        explanation:
+            "Це фішинг через приманку переїзду. Користувач може навіть не замовляти цю послугу. Або якщо замовляв, то через неправильну компанію. Авансовий платіж буде украден, послуга не буде надана.",
+        difficulty: "hard",
+        category: "scam",
+    },
+    {
+        id: "90",
+        subject: "Новини проекту - Оновлення статусу розробки",
+        from: "updates@opensource-project.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f1f8e9;">
+        <h2>🚀 Оновлення проекту - Версія 2.5 готова!</h2>
+        <p>Привіт учасниці проекту!</p>
+        <p>Ми з радістю оголошуємо випуск версії 2.5 нашого open-source проекту.</p>
+        <p><strong>Нові функції:</strong></p>
+        <ul>
+          <li>✓ API для інтеграції з 10+ сервісами</li>
+          <li>✓ Покращена документація</li>
+          <li>✓ Виправлення 47 помилок</li>
+          <li>✓ Нова система плагінів</li>
+        </ul>
+        <p>Завантажити версію 2.5:</p>
+        <a href="https://opensource-project.org/download-v2.5">Завантажити</a>
+        <p>Дякуємо всім контрибʼюторам за допомогу!</p>
+        <p>З повагою,<br/>Команда розробників</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса updates@opensource-project.org видається офіційною",
+            "Посилання веде на офіційний домен opensource-project.org",
+            "Реалістичні нові функції",
+            "Логічна послідовність версій",
+            "Професійний формат оновлення",
+            "Подяка контрибʼюторам - типово для open-source",
+        ],
+        explanation:
+            "Це легітимне оновлення від open-source проекту. Адреса та посилання є офіційними. Такі проекти регулярно надсилають оновлення своїм учасникам про нові версії.",
+        difficulty: "easy",
+        category: "tech",
+    },
+    {
+        id: "91",
+        subject: "Акцион на килиман для дома - Скидка 75%",
+        from: "deals@home-decor-sale.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #ff6b6b, #ffd93d);">
+        <h2 style="text-align: center; color: white;">🏠 КИЛИМЫ ДЛЯ ДОМА - 75% СКИДКА! 🏠</h2>
+        <p style="text-align: center;"><strong>МЕГАРАСПРОДАЖА!</strong></p>
+        <p>Килимы премʼ-класу за неверойтної цены!</p>
+        <ul>
+          <li>Турецькі килимы - від 299₴</li>
+          <li>Перські килимы - від 499₴</li>
+          <li>Шерстяні килимы - від 399₴</li>
+        </ul>
+        <p>Купити килимы:</p>
+        <a href="https://home-decor-sale.biz/carpets" style="display: inline-block; padding: 12px 25px; background: white; color: #ff6b6b; text-decoration: none; border-radius: 5px; font-weight: bold;">КУПИТИ ЗАРАЗ</a>
+        <p>⏰ Пропозиця дійсна тільки до завтра!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен home-decor-sale.biz - явно шахрайський",
+            "Нереалістичні ціни на килимы",
+            "Посилання на магазин від невідомого домену",
+            "Сайт може не відправляти товари",
+            "Типова схема електронної комерції-лохотрону",
+        ],
+        explanation:
+            "Це фішинг через приманку дешевих килимів. Посилання веде на фальшивий магазин. Користувач может задумати платіж, але товари не будуть доставлені. Або сайт запитує дані карти для подальшого списання коштів.",
+        difficulty: "medium",
+        category: "ecommerce",
+    },
+    {
+        id: "92",
+        subject: "Розпорядження про питання - Запит на інформацію",
+        from: "info@city-administration.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fafafa;">
+        <h3>📋 Розпорядження міської адміністрації</h3>
+        <p>Шановний громадянин!</p>
+        <p>Міська адміністрація запускає перепис населення для уточнення даних.</p>
+        <p><strong>Потрібна наступна інформація:</strong></p>
+        <ul>
+          <li>ПІБ</li>
+          <li>Дата народження</li>
+          <li>Адреса проживання</li>
+          <li>Номер телефону</li>
+          <li>Email</li>
+        </ul>
+        <p>Заповніть анкету:</p>
+        <a href="https://city-administration.ua/census-form">Заповнити анкету</a>
+        <p>Крайній термін: 30 листопада 2025</p>
+        <p>Всі дані знаходяться під захистом</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса info@city-administration.ua видається офіційною",
+            "Посилання веде на офіційний домен city-administration.ua",
+            "Реалістичні запити для перепису населення",
+            "Зазначена дата крайнього терміну",
+            "Гарантія захисту даних",
+        ],
+        explanation:
+            "Це легітимне розпорядження від міської адміністрації про перепис населення. Адреса та посилання є офіційними. Перегляди населення регулярно проводяться державними установами.",
+        difficulty: "hard",
+        category: "government",
+    },
+    {
+        id: "93",
+        subject: "Реклама спортивного equipement - Профессиональное снаряжение",
+        from: "sales@sportgear-pro.net",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e0e0e0;">
+        <h2>⚽ Професійне спортивне обладнання - Низькі ціни!</h2>
+        <p>Завдання для всіх видів спорту:</p>
+        <ul>
+          <li>🏃 Беговое обладнання</li>
+          <li>🏋️ Тренажери</li>
+          <li>⚽ Мячи та команда обладнання</li>
+          <li>🎾 Тенісні рахунків</li>
+        </ul>
+        <p>Щоденно поступають нові товари!</p>
+        <a href="https://sportgear-pro.net/catalog">Переглянути каталог</a>
+        <p>Email: sales@sportgear-pro.net<br/>Phone: +38 (067) 123-45-67</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен sportgear-pro.net - видається офіційно, але може бути спуфований",
+            "Посилання на каталог від невідомого домену",
+            "Нереальні контактні дані (номер телефону)",
+            "Магазин може не мати реального місцеположення",
+            "Типова схема фішингу для крадіжки даних",
+        ],
+        explanation:
+            "Це фішинг через приманку спортивного обладнання. Посилання веде на фальшивий каталог. Користувач може задумати платіж за товари, які не будуть доставлені.",
+        difficulty: "medium",
+        category: "ecommerce",
+    },
+    {
+        id: "94",
+        subject: "Оновлення умовысти послуг вашого гаманця",
+        from: "support@moneywallet.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+        <h3>💳 Оновлення умовісті гаманця</h3>
+        <p>Ми оновили умови обслуговування мобільного гаманця.</p>
+        <p><strong>Основні зміни:</strong></p>
+        <ul>
+          <li>Нова комісія за переводи: 1% (замість 2%)</li>
+          <li>Ліміт на переводи: до 100,000₴ на день</li>
+          <li>Нова система безпеки</li>
+          <li>Можливість виведення на международні карти</li>
+        </ul>
+        <p>Нові умови діють з 15 листопада 2025.</p>
+        <p>Для детальної інформації:</p>
+        <a href="https://moneywallet.ua/new-terms">Переглянути умови</a>
+        <p>Контакт: support@moneywallet.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса support@moneywallet.ua видається офіційною",
+            "Посилання веде на офіційний домен moneywallet.ua",
+            "Реалістичні оновлення умов",
+            "Логічні розміри комісій",
+            "Професійний формат",
+        ],
+        explanation:
+            "Це легітимне повідомлення про оновлення умов обслуговування гаманця. Адреса та посилання є офіційними. Фінансові сервіси регулярно оновлюють умови для своїх користувачів.",
+        difficulty: "easy",
+        category: "finance",
+    },
+    {
+        id: "95",
+        subject: "Наш магазин переїхав на нову адресу!",
+        from: "info@store-relocated.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e8f5e9;">
+        <h2>📍 Ми переїхали на нову адресу!</h2>
+        <p>Наш магазин тепер розташований у новому місці!</p>
+        <p><strong>Нова адреса:</strong></p>
+        <p>Вул. Ломоносова, 45<br/>Київ, Україна<br/>Поблизу станції метро "Вокзальна"</p>
+        <p><strong>Години роботи:</strong></p>
+        <ul>
+          <li>Пн-Пт: 09:00 - 21:00</li>
+          <li>Сб-Нд: 10:00 - 20:00</li>
+        </ul>
+        <p><strong>Спеціальна пропозиця для постійних клієнтів:</strong></p>
+        <p>Приносіть цей лист і отримайте 20% знижку на любий товар!</p>
+        <p>📞 +38 (044) 500-50-50</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса info@store-relocated.ua видається офіційною",
+            "Посилання на нову адресу магазину",
+            "Реалістичні години роботи",
+            "Логічне місцезнаходження",
+            "Поточна пропозиція як подяка клієнтам",
+        ],
+        explanation:
+            "Це легітимне повідомлення про переміщення магазину на нову адресу. Адреса та інформація є офіційними. Магазини регулярно оповіщають своїх клієнтів про переміщення.",
+        difficulty: "easy",
+        category: "retail",
+    },
+    {
+        id: "96",
+        subject: "Встановіть новий браузер - Блискавична швидкість",
+        from: "download@superfast-browser.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #e1f5fe;">
+        <h2>⚡ SuperFast Browser - Найшвидший браузер!</h2>
+        <p>Надоїла повільна робота інтернету?</p>
+        <p>SuperFast Browser прискорить вашу роботу у 10 разів!</p>
+        <p><strong>Можливості:</strong></p>
+        <ul>
+          <li>⚡ 10x швидше за Chrome</li>
+          <li>🔒 Абсолютна приватність</li>
+          <li>💾 Мінімальне використання оперативної пам'яті</li>
+          <li>🎮 Оптимізація для ігр та відео</li>
+        </ul>
+        <p>Завантажити БЕЗКОШТОВНО:</p>
+        <a href="https://superfast-browser.biz/download" style="display: inline-block; padding: 15px 30px; background: #0087be; color: white; text-decoration: none; border-radius: 5px; font-size: 18px;">ЗАВАНТАЖИТИ</a>
+        <p>Розмір: 45 MB</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен superfast-browser.biz - явно шахрайський",
+            "Нереалістичні обіцянки (10x швидше)",
+            "Посилання на завантаження від невідомого домену",
+            "Завантажена програма може бути вірусом",
+            "Типова схема для поширення малвера",
+        ],
+        explanation:
+            "Це фішинг для поширення шкідливої браузерної програми. Нереалістичні обіцянки привабляють користувачів. Завантажена програма може бути вірусом, спай-варом або показувати небажану рекламу.",
+        difficulty: "medium",
+        category: "malware",
+    },
+    {
+        id: "97",
+        subject: "Виписка про оцінку вашої кредитоспроможності",
+        from: "report@credit-scoring.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9;">
+        <h3>📊 Звіт про кредитну історію</h3>
+        <p>Ваша кредитна історія і розрахунок рейтингу готові.</p>
+        <p><strong>Основні показники:</strong></p>
+        <ul>
+          <li>Кредитний рейтинг: 750 (дуже добре)</li>
+          <li>Кількість позик: 2 активні</li>
+          <li>Загальний борг: 150,000₴</li>
+          <li>Своєчасність платежів: 100% (відмінно)</li>
+        </ul>
+        <p>Переглянути повний звіт:</p>
+        <a href="https://credit-scoring.ua/my-report">Переглянути звіт</a>
+        <p>Контакт: +38 (044) 444-55-66</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса report@credit-scoring.ua видається офіційною",
+            "Посилання веде на офіційний домен credit-scoring.ua",
+            "Реалістичні показники кредитної історії",
+            "Логічні рейтинги",
+            "Повна контактна інформація",
+        ],
+        explanation:
+            "Це легітимне повідомлення від кредитної скорингової компанії про звіт з кредитної історії. Адреса та посилання є офіційними. Такі компанії регулярно надсилають звіти своїм клієнтам.",
+        difficulty: "easy",
+        category: "finance",
+    },
+    {
+        id: "98",
+        subject: "Запит про реєстрацію нового розроблювача",
+        from: "developers@platform-api.org",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f3e5f5;">
+        <h2>👨‍💻 Програма розробників - Реєстрація</h2>
+        <p>Приєднайтеся до нашої платформи для розробників!</p>
+        <p><strong>Переваги:</strong></p>
+        <ul>
+          <li>✓ Вільний API з Generous Rate Limits</li>
+          <li>✓ Документація та приклади коду</li>
+          <li>✓ Технічна підтримка 24/7</li>
+          <li>✓ SDK для популярних мов програмування</li>
+        </ul>
+        <p><strong>Розпочніть розробку:</strong></p>
+        <a href="https://platform-api.org/dev-signup">Зареєструватися</a>
+        <p>Документація: https://docs.platform-api.org</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса developers@platform-api.org видається офіційною",
+            "Посилання веде на офіційний домен platform-api.org",
+            "Реалістичні переваги програми розробників",
+            "Звичайне запрошення для розробників",
+            "Посилання на документацію включене",
+        ],
+        explanation:
+            "Це легітимне запрошення приєднатися до програми розробників. Адреса та посилання є офіційними. API платформи регулярно запрошують розробників для інтеграції.",
+        difficulty: "easy",
+        category: "tech",
+    },
+    {
+        id: "99",
+        subject: "Знизіти цени на ліки - Огромна розпродаж",
+        from: "deals@pharma-cheap.biz",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff9c4;">
+        <h2>💊 ГІГАНТСЬКА РОЗПРОДАЖ ЛІКІВ - ДО 85% СКИДКА!</h2>
+        <p><strong>Популярні ліки за неверойтних цін:</strong></p>
+        <ul>
+          <li>Аспірин - від 10₴ (замість 50₴)</li>
+          <li>Ібупрофен - від 15₴ (замість 60₴)</li>
+          <li>Вітаміни - від 25₴ (замість 150₴)</li>
+        </ul>
+        <p>Купити ліки:</p>
+        <a href="https://pharma-cheap.biz/shop" style="display: inline-block; padding: 12px 25px; background: #ff5722; color: white; text-decoration: none; border-radius: 5px;">КУПИТИ ЗАРАЗ</a>
+        <p>⏰ Пропозиця дійсна 72 години!</p>
+      </div>
+    `,
+        isPhishing: true,
+        indicators: [
+            "Домен pharma-cheap.biz - явно шахрайський",
+            "Нереалістичні ціни на ліки (85% знижка)",
+            "Посилання на магазин від невідомого домену",
+            "Реальна аптека не розповсюджує ліки через такі листи",
+            "Типична схема лохотрону",
+        ],
+        explanation:
+            "Це фішинг через приманку дешевих ліків. Посилання веде на фальшивий магазин. Користувач может задумати платіж, але ліки не будуть доставлені. Нереальна ціна вказує на шахрайство.",
+        difficulty: "medium",
+        category: "healthcare",
+    },
+    {
+        id: "100",
+        subject: "Вітаємо з визнанням! Стипендія для вас",
+        from: "excellence@university.ua",
+        body: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="text-align: center;">🏆 ВІТАЄМО З ВИЗНАННЯМ! 🏆</h2>
+        <p style="text-align: center;"><strong>Ви нагороджені стипендією за академічні досягнення!</strong></p>
+        <p>Детали премії:</p>
+        <ul>
+          <li>💰 Розмір: €5,000 / семестр</li>
+          <li>📚 Період: 2 роки</li>
+          <li>✓ Умова: Середній бал вище 4.5</li>
+          <li>✓ Визнання: В рейтингу "Найкращі студенти"</li>
+        </ul>
+        <p>Прийміть стипендію:</p>
+        <a href="https://university.ua/scholarship/accept" style="display: inline-block; padding: 12px 25px; background: white; color: #667eea; text-decoration: none; border-radius: 5px; font-weight: bold;">Прийняти стипендію</a>
+        <p style="margin-top: 20px;">Контакт: scholarship@university.ua</p>
+      </div>
+    `,
+        isPhishing: false,
+        indicators: [
+            "Адреса excellence@university.ua видається офіційною",
+            "Посилання веде на офіційний домен university.ua",
+            "Реалістичні розміри стипендії",
+            "Логічні умови для отримання",
+            "Професійний формат вітання",
+        ],
+        explanation:
+            "Це легітимне повідомлення про отримання стипендії за академічні досягнення. Адреса та посилання є офіційними. Університети регулярно нараховують стипендії відмінникам.",
+        difficulty: "easy",
+        category: "education",
+    },
+];
