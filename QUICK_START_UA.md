@@ -1,0 +1,144 @@
+# ⚡ Швидкий старт - PhishTrainer
+
+## 🎯 Для тих, хто хоче швидко почати
+
+### Крок 1: Встановіть Docker Desktop (5-10 хвилин)
+
+1. 🔗 **Завантажте Docker:** https://www.docker.com/products/docker-desktop/
+2. ▶️ **Запустіть інсталятор** та натисніть "Ok"
+3. 🔄 **Перезавантажте комп'ютер**
+4. ✅ **Запустіть Docker Desktop** з робочого столу
+
+### Крок 2: Завантажте проект (2 хвилини)
+
+```powershell
+# Створіть папку та завантажте проект
+cd C:\
+mkdir Projects
+cd Projects
+git clone https://github.com/Mksvt/PhishTrainer.git
+cd PhishTrainer
+```
+
+_Якщо Git не встановлено - завантажте ZIP з GitHub та розпакуйте_
+
+### Крок 3: Налаштуйте Backend (1 хвилина)
+
+```powershell
+# Створіть файл конфігурації
+cd backend
+@"
+DATABASE_URL="postgresql://phishtrainer:phishtrainer123@localhost:5432/phishtrainer?schema=public"
+REDIS_HOST=localhost
+REDIS_PORT=6379
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-12345
+JWT_EXPIRES_IN=7d
+PORT=3001
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:3000
+"@ | Out-File -FilePath .env -Encoding UTF8
+cd ..
+```
+
+### Крок 4: Запустіть проект (5-10 хвилин при першому запуску)
+
+```powershell
+# Запустіть всі сервіси
+docker-compose up -d
+
+# Зачекайте 1-2 хвилини, потім ініціалізуйте БД
+docker exec -it phishtrainer-backend npm run prisma:migrate:deploy
+```
+
+### Крок 5: Відкрийте додаток! 🎉
+
+**Перейдіть у браузері:**
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🚀 Основні команди
+
+### Запуск проекту:
+
+```powershell
+docker-compose up -d
+```
+
+### Зупинка проекту:
+
+```powershell
+docker-compose down
+```
+
+### Перегляд логів (якщо проблеми):
+
+```powershell
+docker-compose logs
+```
+
+### Повний перезапуск:
+
+```powershell
+docker-compose down -v
+docker-compose up -d --build
+```
+
+---
+
+## 🎮 Як користуватися
+
+1. **Реєстрація** → Натисніть "Sign Up" та створіть акаунт
+2. **Вхід** → Введіть email та пароль
+3. **Симуляція** → Перейдіть у розділ "Simulation"
+4. **Практика** → Перевіряйте листи, вчіться розпізнавати фішинг!
+5. **Прогрес** → Дивіться свою статистику в "Profile"
+
+---
+
+## 🆘 Проблеми?
+
+### Порт зайнятий:
+
+```powershell
+netstat -ano | findstr :3000
+taskkill /PID <номер> /F
+```
+
+### Docker не працює:
+
+-   Перезапустіть Docker Desktop
+-   Перезавантажте комп'ютер
+
+### Не працює база даних:
+
+```powershell
+docker-compose restart postgres
+docker exec -it phishtrainer-backend npm run prisma:migrate:deploy
+```
+
+---
+
+## 📖 Детальна документація
+
+**Повний посібник:** [USER_GUIDE_UA.md](./USER_GUIDE_UA.md)
+
+-   Детальне встановлення Docker
+-   Опис всіх функцій
+-   Вирішення проблем
+-   API документація
+-   Поради для навчання
+
+---
+
+## 🎯 Перше завдання
+
+1. ✅ Зареєструйтеся в системі
+2. ✅ Пройдіть 5 симуляцій
+3. ✅ Досягніть 60% точності
+4. ✅ Вивчіть ознаки фішингу
+
+**Успіхів! 🚀**
